@@ -30,7 +30,7 @@ enum ws_unit_pressure
 };
 
 /*
-	Holds all of the imformation for accessing the device
+	Holds all of the information for accessing the device
 */
 
 typedef struct
