@@ -6,7 +6,6 @@
 
 int ws_init()
 {
-	printf("Hello World");
 	
 	return 0;
 }
