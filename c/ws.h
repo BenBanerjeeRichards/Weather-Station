@@ -40,15 +40,6 @@ typedef struct
 	struct libusb_device_handle* hnd;
 }  ws_device;
 
-/**
-	Holds the details for finding the USB device 
-*/
-
-typedef struct 
-{
-	uint16_t vendor;
-	uint16_t product;
-} ws_product;
 
 /**
 	Holds information regarding the units begin used
