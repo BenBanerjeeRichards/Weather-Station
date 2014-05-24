@@ -6,7 +6,7 @@
 // --------- Enum and Struct Definitions --------- //
 
 /*
-Following enums define types for units 
+	Following enums define types for units 
 */
 
 enum ws_unit_speed
@@ -96,7 +96,7 @@ typedef struct
 } ws_weather_record;  
 
 /* 
-Holds a time
+	Holds a time
 */
 typedef struct 
 {
@@ -108,7 +108,7 @@ typedef struct
 } ws_time;
 
 /*
-Holds the min and max values for an item
+	Holds the min, max values for an item as well as when that event occurred
 */
 
 typedef struct 
@@ -116,13 +116,14 @@ typedef struct
 	double min;
 	double max;
 	
-	ws_time time;
+	ws_time min_time;
+	ws_time max_time;
+
 } ws_min_max;
 
 /*
-Holds all of the extreme values (min-maxes)
-Note that rain extremes have no minimums
-
+	Holds all of the extreme values (min-maxes)
+	Note that rain extremes have no minimums
 */
 
 typedef struct 
