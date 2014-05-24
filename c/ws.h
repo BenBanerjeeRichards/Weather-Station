@@ -151,7 +151,22 @@ typedef struct
 
 
 // --------- Function Definitions --------- //
-int ws_init();
+
+/*
+	Initialises things:
+		- Finds the weather station
+		- Retrieves a handle for the station
+		- Fills out the given ws_device struct 
+	
+	Parameters:
+		- dev:ws_device 	A device struct, empty at this point which 
+							will be filled out by the function
+	
+	Return:
+		- WS_NO_STATION		No weather station could be found 
+*/
+
+int ws_init(ws_device *dev);
 
 
 
