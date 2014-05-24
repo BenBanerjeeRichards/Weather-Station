@@ -95,6 +95,60 @@ typedef struct
 
 } ws_weather_record;  
 
+/* 
+Holds a time
+*/
+typedef struct 
+{
+	int year;
+	int month;
+	int day;
+	int hour;
+	int minute;
+} ws_time;
+
+/*
+Holds the min and max values for an item
+*/
+
+typedef struct 
+{
+	double min;
+	double max;
+	
+	ws_time time;
+} ws_min_max;
+
+/*
+Holds all of the extreme values (min-maxes)
+Note that rain extremes have no minimums
+
+*/
+
+typedef struct 
+{
+	ws_min_max indoor_humidity;
+	ws_min_max outdoor_humidity;
+	
+	ws_min_max indoor_temperature;
+	ws_min_max outdoor_temperature;
+	
+	ws_min_max wind_chill;
+	ws_min_max dew_point;
+	
+	ws_min_max absolute_pressure;
+	ws_min_max relative_pressure;
+	
+	ws_min_max wind_speed;
+	ws_min_max gust_speed;
+	
+	ws_min_max rain_daily;		// no min
+	ws_min_max rain_weekly;		// no min
+	ws_min_max rain_monthly;	// no min
+	ws_min_max rain_total;		// no min
+} ws_weather_extremes;
+
+
 // --------- Function Definitions --------- //
 int ws_init();
 
