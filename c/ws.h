@@ -30,6 +30,14 @@ enum ws_unit_pressure
 };
 
 /**
+	Error enums
+*/
+
+enum ws_error {
+	
+};
+
+/**
 	Holds all of the information for accessing the device
 */
 
@@ -144,17 +152,33 @@ typedef struct
 // --------- Function Definitions --------- //
 
 /**
+	Notes: 	
+		- Every int-returning function returns 0 on success and a non-zero number on failure. So, 
+		  to check for an error:
+		
+			if (ws_some_function() != 0)
+			{
+				// handle error here
+			}
+			
+		- Most functions require root priviliges to work.
+*/
+
+
+
+/**
 	Initialises things:
 		- Finds the weather station
 		- Retrieves a handle for the station
 		- Fills out the given ws_device struct 
 	
 	Parameters:
-		- dev:ws_device 	A device struct, empty at this point which 
-							will be filled out by the function
+		- dev:		A device struct, empty at this point which 
+					will be filled out by the function
 	
 	Return:
-		- WS_ERR_NO_STATION		No weather station could be found 
+		- WS_ERR_NO_STATION			No weather station could be found 
+		- WS_ERR_USB_INIT_FAILED	libusb  failed to initialise
 */
 
 int ws_init(ws_device *dev);
@@ -168,7 +192,7 @@ int ws_init(ws_device *dev);
 	result in errors.
 	
 	Parameters:
-		- dev:ws_device 	A device struct for the device to be closed
+		- dev: 		A device struct for the device to be closed
 	
 */
 
@@ -188,7 +212,7 @@ void ws_close(ws_device *dev);
 
 	
 	Parameters:
-		- dev:ws_device 	A device struct for the device 
+		- dev	 	A device struct for the device 
 		
 	Return:
 		- WS_ERR_INTERFACE_CLAIM_FAILED 	The function was unable to claim the 
@@ -221,13 +245,13 @@ int ws_initialise_read(ws_device *dev);
 	32 Bytes of data at a time is requested, and the data is retrieved in 4 8 byte bulk transfers.
 	This means that to retrive all 256 bytes of data, 8 control transfers must take place.
 	
-	This data can be read in single 32 byte chunks by calling ws_read_block(): do not use this function
-	for retrieving data from a single chunk, for example the next record location, as this would waste 
-	time. 
+	This data can be read in single 32 byte chunks by calling ws_read_block(), which should be used 
+	if only specific chunks are required, due to the fact that reading 256 bytes of data takes longer 
+	thatn only 32.
 	
 	Parameters:
-		- dev:ws_device 		A device struct for the device to be read from
-		- data: unsigneed char	The data array
+		- dev: 		A device struct for the device to be read from
+		- data:  char	The data array
 	
 	Return:
 		- WS_ERR_CONTROL_TRANSFER_FAILED	Request for data write failed
@@ -238,12 +262,14 @@ int ws_read_fixed_block(ws_device *dev, unsigned char* data);
 
 
 /**
-	Reads a single block from a specified address from the weather station.
+	Reads a single block from a specified address from the weather station. A single 
+	block is 32 bytes.
 	
 	Parameters:
-		- dev:ws_device 		A device struct for the device to be read from
-		- data: unsigneed char	The data array
-		- address:int			The address to be read from. Note that this number
+		- dev: 					A device struct for the device to be read from
+		- data:  				The data array
+		
+		- address:				The address to be read from. Note that this number
 								will be rounded down to the nearest multiple of 32, 
 								as all data is read in 32 byte chunks
 								
@@ -264,14 +290,65 @@ int ws_read_block(ws_device *dev, int address, unsigned char* data);
 	This address is stored in the fixed block memory, at position 0x1E.
 	
 	Parameters:
-		- dev:ws_device 	A device struct for the device 
-		- address:int 		The address of the latest record.	
+		- dev: 			A device struct for the device 
+		- address: 		The address of the latest record.	
 		
 	Return:
 		- WS_ERR_CONTROL_TRANSFER_FAILED	Request for data write failed
 		- WS_ERR_BULK_TRANSFER_FAILED		Data read failed 
 */
 int ws_latest_record_address(ws_device *dev, int *address);
+
+
+/**
+	Reads a weather record, formats the data and puts it in a ws_weather_record stuct.
+	
+	Parameters:
+		- dev:		 	A device struct for the device 
+
+		- address: 		The address of the 	block in memory. If this value is -1, then 
+						the latest record written will be read. The data must be in the 
+						range of 0x100 -> 0xFFFF, otherwise WS_ERR_INVALID_ADDR will be 
+						returned.
+					
+						This number will be rounded down to the nearest 16. As blocks are
+						read in 32 byte blocks, if the next/previous record is in the same 
+						block, and you would like to access it, then use ws_read_multiple_records()
+						as it will prevent multiple reads of the data.
+		
+		- record		The struct for the data to be stored.
+		
+	Return:
+		- WS_ERR_CONTROL_TRANSFER_FAILED	Request for data write failed
+		- WS_ERR_BULK_TRANSFER_FAILED		Data read failed 
+		- WS_ERR_INVALID_ADDR				Invalid address provided, most likly out of range.
+*/
+int ws_read_weather_record(ws_device *dev, int address, ws_weather_record *record);
+
+
+/**
+	Reads all of the weather records between two addresses. It should be noted that retrieving large amounts of 
+	data can take a long time. address_to and address_from must be in the range 0x100 -> 0xFFFF.
+	
+	Parameters:
+		- dev: 				A device struct for the device 
+		
+		- address_from:		The address to start reading from. This number will be down rounded to the 
+							nearest 16 - the size of a weather record.
+							
+		- address_to:		The address to read to. This number will be up rounded to the 
+							nearest 16 - the size of a weather record.
+							
+		- record			An array of records retrieved from memory
+		
+		- record_count		The number of records read from the device.
+							
+	Return:
+		- WS_ERR_CONTROL_TRANSFER_FAILED	Request for data write failed
+		- WS_ERR_BULK_TRANSFER_FAILED		Data read failed 
+		- WS_ERR_INVALID_ADDR				Invalid address provided, most likly out of range.
+*/
+int ws_read_multiple_weather_records(ws_device *dev, int address_from, int address_to, ws_weather_record **record, int *record_count);
 
 
 
