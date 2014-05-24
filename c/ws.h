@@ -177,7 +177,7 @@ void ws_close(ws_device *dev);
 
 /**
 	Sends a control transfer to the device just before any reading takes place.
-	This function must be called _just before_ any reading (ws_read*) takes place.
+	This function must be called before any reading (ws_read*) takes place.
 	   
 	Function will:
 		- If the kernal has an attached driver, detach it
@@ -191,7 +191,7 @@ void ws_close(ws_device *dev);
 		- dev:ws_device 	A device struct for the device 
 		
 	Return:
-		- WS_ERR_INTERFACE_CLAIM_FAILED 	The function was unable to claim and 
+		- WS_ERR_INTERFACE_CLAIM_FAILED 	The function was unable to claim the 
 											interface
 											 
 		- WS_ERR_INVALID_PERMISSIONS		The program was not given sufficient 
