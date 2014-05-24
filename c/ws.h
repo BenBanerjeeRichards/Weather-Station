@@ -29,7 +29,7 @@ enum ws_unit_pressure
 	HECTOPASCALS, INCH_MERCURY, MILLIMETER_MERCURY
 };
 
-/*
+/**
 	Holds all of the information for accessing the device
 */
 
@@ -40,7 +40,7 @@ typedef struct
 	struct libusb_device_handle* hnd;
 }  ws_device;
 
-/*
+/**
 	Holds the details for finding the USB device 
 */
 
@@ -50,7 +50,7 @@ typedef struct
 	uint16_t product;
 } ws_product;
 
-/*
+/**
 	Holds information regarding the units begin used
 */
 
@@ -64,7 +64,7 @@ typedef struct
 } ws_data_info;
 
 
-/*
+/**
 Status of the weather station
 */
 typedef struct
@@ -74,7 +74,7 @@ typedef struct
 } ws_station_status;
 
 
-/*
+/**
 	Holds a single weather record - this is where the actual weather data is stored
 */
 typedef struct 
@@ -95,7 +95,7 @@ typedef struct
 
 } ws_weather_record;  
 
-/* 
+/** 
 	Holds a time
 */
 typedef struct 
@@ -107,7 +107,7 @@ typedef struct
 	int minute;
 } ws_time;
 
-/*
+/**
 	Holds the min, max values for an item as well as when that event occurred
 */
 
@@ -121,7 +121,7 @@ typedef struct
 
 } ws_min_max;
 
-/*
+/**
 	Holds all of the extreme values (min-maxes)
 	Note that rain extremes have no minimums
 */
