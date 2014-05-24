@@ -11,7 +11,7 @@
 */
 
 #define FOREACH_WS_ERR(ERROR) 		\
-	ERROR(WS_ERR_NO_STATION) 		\
+	ERROR(WS_ERR_NO_STATION_FOUND) 		\
 	ERROR(WS_ERR_USB_INIT_FAILED) 	\
 	ERROR(WS_ERR_INTERFACE_CLAIM_FAILED) 	\
 	ERROR(WS_ERR_INVALID_PERMISSIONS) 	\
@@ -207,7 +207,7 @@ typedef struct
 					will be filled out by the function
 	
 	Return:
-		- WS_ERR_NO_STATION			No weather station could be found 
+		- WS_ERR_NO_STATION_FOUND	No weather station could be found 
 		- WS_ERR_USB_INIT_FAILED	libusb  failed to initialise
 */
 
