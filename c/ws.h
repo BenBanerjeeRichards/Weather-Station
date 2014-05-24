@@ -228,6 +228,10 @@ int ws_initialise_read(ws_device *dev);
 	Parameters:
 		- dev:ws_device 		A device struct for the device to be read from
 		- data: unsigneed char	The data array
+	
+	Return:
+		- WS_ERR_CONTROL_TRANSFER_FAILED	Request for data write failed
+		- WS_ERR_BULK_TRANSFER_FAILED		Data read failed 
 */
 
 int ws_read_fixed_block(ws_device *dev, unsigned char* data)
