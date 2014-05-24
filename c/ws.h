@@ -5,6 +5,37 @@
 
 // --------- Enum and Struct Definitions --------- //
 
+/**
+	Error enums with const* char array
+    http://stackoverflow.com/questions/9907160/how-to-convert-enum-names-to-string-in-c
+*/
+
+#define FOREACH_WS_ERR(ERROR) 		\
+	ERROR(WS_ERR_NO_STATION) 		\
+	ERROR(WS_ERR_USB_INIT_FAILED) 	\
+	ERROR(WS_ERR_INTERFACE_CLAIM_FAILED) 	\
+	ERROR(WS_ERR_INVALID_PERMISSIONS) 	\
+	ERROR(WS_ERR_CONTROL_TRANSFER_FAILED) 	\
+	ERROR(WS_ERR_BULK_TRANSFER_FAILED) 	\
+	ERROR(WS_ERR_CONTROL_TRANSFER_FAILED) 	\
+	ERROR(WS_ERR_INVALID_ADDR) 	\
+
+	
+#define GENERATE_ENUM(ENUM) ENUM,
+#define GENERATE_STRING(STRING) #STRING,
+
+enum ws_errors {
+	FOREACH_WS_ERR(GENERATE_ENUM)
+};
+
+enum ws_success {
+	WS_SUCCESS = -10
+};
+
+static const char *ws_errors_string[] = {
+	FOREACH_WS_ERR(GENERATE_STRING)
+};
+
 /*
 	Following enums define types for units 
 */
@@ -27,14 +58,6 @@ enum ws_unit_temp
 enum ws_unit_pressure
 {
 	HECTOPASCALS, INCH_MERCURY, MILLIMETER_MERCURY
-};
-
-/**
-	Error enums
-*/
-
-enum ws_error {
-	
 };
 
 /**
@@ -153,14 +176,22 @@ typedef struct
 
 /**
 	Notes: 	
-		- Every int-returning function returns 0 on success and a non-zero number on failure. So, 
-		  to check for an error:
+		- Every int-returning function returns a number LESS THAN 0 on success. This is as a 
+		result of using enums for errors. The actual value being returned is WS_SUCCESS. This means
+		that errors can be checked by:
 		
-			if (ws_some_function() != 0)
-			{
-				// handle error here
-			}
-			
+		if (int_returning_func() >= 0) 		// Has no meaning to someone who hasn't read the documentation.
+		{
+			// Handle error
+		}
+		
+		or
+		
+		if (int_returning_func() != WS_SUCCESS)		// Much more obvious, hence this is the recommended method.
+		{
+			// Handle error
+		}
+		
 		- Most functions require root priviliges to work.
 */
 
