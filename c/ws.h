@@ -247,12 +247,32 @@ int ws_read_fixed_block(ws_device *dev, unsigned char* data)
 								will be rounded down to the nearest multiple of 32, 
 								as all data is read in 32 byte chunks
 								
-								The memory is in the range of 0x0000 -> 0xFFFF
+								The memory is in the range of 0x0000 -> 0xFFFF. Weather
+								records start at 0x100
 								
 	Return:
 		- WS_ERR_CONTROL_TRANSFER_FAILED	Request for data write failed
 		- WS_ERR_BULK_TRANSFER_FAILED		Data read failed 
 */
 int ws_read_block(ws_device *dev, int address, unsigned char* data);
+
+/**
+	Retrieves the address in the device's memory of the latest weather record saved. Useful, as
+	the data is stored in a circular buffer where old data is overwritten when the memory has all
+	been used up.   
+	
+	This address is stored in the fixed block memory, at position 0x1E.
+	
+	Parameters:
+		- dev:ws_device 	A device struct for the device 
+		- address:int 		The address of the latest record.	
+		
+	Return:
+		- WS_ERR_CONTROL_TRANSFER_FAILED	Request for data write failed
+		- WS_ERR_BULK_TRANSFER_FAILED		Data read failed 
+*/
+int ws_latest_record_address(ws_device *dev, int *address);
+
+
 
 #endif
