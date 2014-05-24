@@ -236,4 +236,23 @@ int ws_initialise_read(ws_device *dev);
 
 int ws_read_fixed_block(ws_device *dev, unsigned char* data)
 
+
+/**
+	Reads a single block from a specified address from the weather station.
+	
+	Parameters:
+		- dev:ws_device 		A device struct for the device to be read from
+		- data: unsigneed char	The data array
+		- address:int			The address to be read from. Note that this number
+								will be rounded down to the nearest multiple of 32, 
+								as all data is read in 32 byte chunks
+								
+								The memory is in the range of 0x0000 -> 0xFFFF
+								
+	Return:
+		- WS_ERR_CONTROL_TRANSFER_FAILED	Request for data write failed
+		- WS_ERR_BULK_TRANSFER_FAILED		Data read failed 
+*/
+int ws_read_block(ws_device *dev, int address, unsigned char* data);
+
 #endif
