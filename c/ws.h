@@ -143,7 +143,7 @@ typedef struct
 
 // --------- Function Definitions --------- //
 
-/*
+/**
 	Initialises things:
 		- Finds the weather station
 		- Retrieves a handle for the station
@@ -154,10 +154,53 @@ typedef struct
 							will be filled out by the function
 	
 	Return:
-		- WS_NO_STATION		No weather station could be found 
+		- WS_ERR_NO_STATION		No weather station could be found 
 */
 
 int ws_init(ws_device *dev);
+
+
+/**
+	Closes the handle of the USB device, so that it can no
+	longer be used.
+	
+	Passing ws_device to another ws_* function other that ws_init will
+	result in errors.
+	
+	Parameters:
+		- dev:ws_device 	A device struct for the device to be closed
+	
+*/
+
+void ws_close(ws_device *dev);
+
+
+/**
+	Sends a control transfer to the device just before any reading takes place.
+	This function must be called _just before_ any reading (ws_read*) takes place.
+	   
+	Function will:
+		- If the kernal has an attached driver, detach it
+		- Claim the interface 
+		- Send a control message to the weather station 
+		
+	This function only needs to be called once after ws_init
+
+	
+	Parameters:
+		- dev:ws_device 	A device struct for the device 
+		
+	Return:
+		- WS_ERR_INTERFACE_CLAIM_FAILED 	The function was unable to claim and 
+											interface
+											 
+		- WS_ERR_INVALID_PERMISSIONS		The program was not given sufficient 
+											priviliges to complete the task
+		
+		- WS_ERR_CONTROL_TRANSFER_FAILED	Control transfer failed. See log for 
+											libusb error.
+*/
+int ws_initialise_read(ws_device *dev);
 
 
 
