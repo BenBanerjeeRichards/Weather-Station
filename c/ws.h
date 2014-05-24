@@ -234,7 +234,7 @@ int ws_initialise_read(ws_device *dev);
 		- WS_ERR_BULK_TRANSFER_FAILED		Data read failed 
 */
 
-int ws_read_fixed_block(ws_device *dev, unsigned char* data)
+int ws_read_fixed_block(ws_device *dev, unsigned char* data);
 
 
 /**
