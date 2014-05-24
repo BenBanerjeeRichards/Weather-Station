@@ -180,7 +180,7 @@ void ws_close(ws_device *dev);
 	This function must be called before any reading (ws_read*) takes place.
 	   
 	Function will:
-		- If the kernal has an attached driver, detach it
+		- If the kernel has an attached driver, detach it
 		- Claim the interface 
 		- Send a control message to the weather station 
 		
@@ -203,5 +203,33 @@ void ws_close(ws_device *dev);
 int ws_initialise_read(ws_device *dev);
 
 
+/**
+	Reads the first 256 bytes of the weather station's memory. This data contains 
+	alarm information and min and max values, along with some other useful data such 
+	as the latest weather record position.
+	
+	This function, on a high level, is considered a read function. But two transfers must
+	happen to retrieve the data:
+		
+		1) Control transfer to endpoint 0x0. This sends a few commands to the weather station,
+		giving it information, including the address of the date in the EPROM we would like
+		to access.
+		
+		2) Bulk transfer from endpoint 0x81. This reads the data from the endpoint that the 
+		weather station has written to, from the address we requested. 
+		
+	32 Bytes of data at a time is requested, and the data is retrieved in 4 8 byte bulk transfers.
+	This means that to retrive all 256 bytes of data, 8 control transfers must take place.
+	
+	This data can be read in single 32 byte chunks by calling ws_read_block(): do not use this function
+	for retrieving data from a single chunk, for example the next record location, as this would waste 
+	time. 
+	
+	Parameters:
+		- dev:ws_device 		A device struct for the device to be read from
+		- data: unsigneed char	The data array
+*/
+
+int ws_read_fixed_block(ws_device *dev, unsigned char* data)
 
 #endif
