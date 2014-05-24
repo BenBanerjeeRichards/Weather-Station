@@ -69,7 +69,7 @@ Status of the weather station
 */
 typedef struct
 {
-	int sensor_contack_error;
+	int sensor_contact_error;
 	int rain_counter_overflow;
 } ws_station_status;
 
