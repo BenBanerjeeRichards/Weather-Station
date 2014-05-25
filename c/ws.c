@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <libusb-1.0/libusb.h>
-
+#include <string.h>
 #include "ws.h"
 
 void ws_usb_error(int status, const char* additonal_info)
@@ -89,7 +89,53 @@ int ws_initialise_read(ws_device *dev)
 	if (status < 0)
 	{
 		ws_usb_error(status, "ws_initialise_read::libusb_control_transfer");
-		return 1;
+		return WS_ERR_CONTROL_TRANSFER_FAILED;
+	}
+	
+	return WS_SUCCESS;
+}
+
+int ws_read_block(ws_device *dev, int address, unsigned char* data, int* read)
+{
+	int status;
+	*read = 0;
+	
+	unsigned char address_high = address / 256;
+	unsigned char address_low = address % 256;
+	
+	unsigned char write_data[8];
+	write_data[0] = 0xA1;
+	write_data[1] = address_high;
+	write_data[2] = address_low;
+	write_data[3] = 0x20;
+	write_data[4] = 0xA1;
+	write_data[5] = 0x00;
+	write_data[6] = 0x00;
+	write_data[7] = 0x20;
+	
+	int req_type = LIBUSB_ENDPOINT_OUT | LIBUSB_REQUEST_TYPE_CLASS | LIBUSB_RECIPIENT_INTERFACE;
+	
+	status =  libusb_control_transfer(dev->hnd, req_type, 0x9, 0x200, 0x0, write_data, sizeof(write_data), 0);
+	if (status < 0)
+	{
+		ws_usb_error(status, "ws_read_block::libusb_control_transfer");
+		return WS_ERR_CONTROL_TRANSFER_FAILED;
+	}
+	
+	for (int i = 0; i < 4; i++)
+	{
+		int transferred;
+		unsigned char buf[8];
+		
+		int status = libusb_bulk_transfer(dev->hnd, 0x81, buf, 8, &transferred, 0);
+		if (status < 0)
+		{
+			ws_usb_error(status, "ws_read_block::libusb_bulk_transfer");
+			return WS_ERR_BULK_TRANSFER_FAILED;
+		}
+				
+		memcpy(&data[(i * 8)], buf, 8);
+		*read += transferred;
 	}
 	
 	return WS_SUCCESS;
