@@ -16,7 +16,7 @@ int ws_init(ws_device *dev)
 	status = libusb_init(NULL);
 	if (status < 0)
 	{
-		ws_usb_error(status, "libusb_init");
+		ws_usb_error(status, "ws_init::libusb_init");
 		return WS_ERR_USB_INIT_FAILED;  
 	}
 	
@@ -52,18 +52,45 @@ int ws_init(ws_device *dev)
 
 	}
 	
-	
 	status = libusb_open(dev->dev, &dev->hnd);
 	if (status < 0)
 	{
-		ws_usb_error(status, "libusb_open");
+		ws_usb_error(status, "ws_init::libusb_open");
 		return WS_ERR_OPEN_FAILED;  
 	}
 	
+
 	return WS_SUCCESS;
 }
 
 void ws_close(ws_device *dev)
 {
 	libusb_close(dev->hnd);
+}
+
+int ws_initialise_read(ws_device *dev)
+{
+	// Does not matter if this fails, as the kernel may have never 
+	// have attached a driver in the first instance or it could have been
+	// already been removed earlier
+	libusb_detach_kernel_driver(dev->hnd, 0);
+	
+	int status = libusb_claim_interface(dev->hnd, 0);
+	if (status < 0)
+	{
+		ws_usb_error(status, "ws_initialise_read::libusb_claim_interface");
+		return WS_ERR_INTERFACE_CLAIM_FAILED;
+	}
+	
+	int req_type = LIBUSB_ENDPOINT_OUT | LIBUSB_REQUEST_TYPE_CLASS | LIBUSB_RECIPIENT_INTERFACE;			
+	unsigned char buf[0];
+	
+	status =  libusb_control_transfer(dev->hnd, req_type, 0xA, 0x0, 0x0, buf, sizeof(buf), 0);
+	if (status < 0)
+	{
+		ws_usb_error(status, "ws_initialise_read::libusb_control_transfer");
+		return 1;
+	}
+	
+	return WS_SUCCESS;
 }
