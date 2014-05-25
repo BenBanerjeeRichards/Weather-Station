@@ -27,6 +27,11 @@ int ws_init(ws_device *dev)
 	libusb_device **devs;
 	int count = libusb_get_device_list(NULL, &devs);
 	
+	if (count == 0)
+	{
+		return WS_ERR_NO_STATION_FOUND;
+	}
+	
 	for (int i = 0; i < count; i++)
 	{
 		struct libusb_device_descriptor desc;
