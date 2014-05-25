@@ -292,7 +292,7 @@ int ws_initialise_read(ws_device *dev);
 		- WS_ERR_BULK_TRANSFER_FAILED		Data read failed 
 */
 
-int ws_read_fixed_block(ws_device *dev, unsigned char* data);
+int ws_read_fixed_block(ws_device *dev, unsigned char* data, int* read);
 
 
 /**
@@ -309,12 +309,14 @@ int ws_read_fixed_block(ws_device *dev, unsigned char* data);
 								
 								The memory is in the range of 0x0000 -> 0xFFFF. Weather
 								records start at 0x100
+		
+		- read					The number of bytes read					
 								
 	Return:
 		- WS_ERR_CONTROL_TRANSFER_FAILED	Request for data write failed
 		- WS_ERR_BULK_TRANSFER_FAILED		Data read failed 
 */
-int ws_read_block(ws_device *dev, int address, unsigned char* data);
+int ws_read_block(ws_device *dev, int address, unsigned char* data, int* read);
 
 /**
 	Retrieves the address in the device's memory of the latest weather record saved. Useful, as
@@ -331,7 +333,26 @@ int ws_read_block(ws_device *dev, int address, unsigned char* data);
 		- WS_ERR_CONTROL_TRANSFER_FAILED	Request for data write failed
 		- WS_ERR_BULK_TRANSFER_FAILED		Data read failed 
 */
+
 int ws_latest_record_address(ws_device *dev, int *address);
+
+
+/**
+	Takes a weather record's raw data (32 byte unsigned char array) and processes
+	it, placing the data in a ws_weather_record struct.
+	
+	Parameters:
+		data:		32 bytes of record data. This data must be from with the range 
+					0x100 -> 0xFFFF, and contain 32 bytes. Any more bytes will be 
+					ignored, any less will cause the program to crash.
+					
+		record		A record stuct to put the processed data in.
+		
+	Return:
+		
+*/
+
+int ws_process_record_data(unsigned char *data, ws_weather_record *record);
 
 
 /**
