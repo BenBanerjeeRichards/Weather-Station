@@ -47,14 +47,11 @@ int ws_init(ws_device *dev)
 		
 		if (i == (count - 1))
 		{
-			libusb_free_device_list(devs, 1);
 			return WS_ERR_NO_STATION_FOUND;
 		}
 
 	}
 	
-	libusb_free_device_list(devs, 1);
-
 	
 	status = libusb_open(dev->dev, &dev->hnd);
 	if (status < 0)
@@ -64,4 +61,9 @@ int ws_init(ws_device *dev)
 	}
 	
 	return WS_SUCCESS;
+}
+
+void ws_close(ws_device *dev)
+{
+	libusb_close(dev->hnd);
 }
