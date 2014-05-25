@@ -59,5 +59,5 @@ int ws_init(ws_device *dev)
 		return WS_ERR_OPEN_FAILED;  
 	}
 	
-	return 0;
+	return WS_SUCCESS;
 }
