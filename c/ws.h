@@ -18,6 +18,8 @@
 	ERROR(WS_ERR_CONTROL_TRANSFER_FAILED) 	\
 	ERROR(WS_ERR_BULK_TRANSFER_FAILED) 	\
 	ERROR(WS_ERR_INVALID_ADDR) 	\
+	ERROR(WS_ERR_NO_DEVICE)		\
+	ERROR(WS_ERR_OPEN_FAILED) \
 
 	
 #define GENERATE_ENUM(ENUM) ENUM,
@@ -209,6 +211,8 @@ typedef struct
 	Return:
 		- WS_ERR_NO_STATION_FOUND	No weather station could be found 
 		- WS_ERR_USB_INIT_FAILED	libusb  failed to initialise
+		- WS_ERR_NO_DEVICE			No device could be found from the handle
+		- WS_ERR_OPEN_FAILED		Libusb failed to open the device
 */
 
 int ws_init(ws_device *dev);
@@ -378,8 +382,16 @@ int ws_read_weather_record(ws_device *dev, int address, ws_weather_record *recor
 		- WS_ERR_BULK_TRANSFER_FAILED		Data read failed 
 		- WS_ERR_INVALID_ADDR				Invalid address provided, most likly out of range.
 */
-int ws_read_multiple_weather_records(ws_device *dev, int address_from, int address_to, ws_weather_record **record, int *record_count);
+int ws_read_multiple_weather_records(ws_device *dev, int address_from, int address_to, ws_weather_record ***record, int *record_count);
 
+/**
+	Prints an error from libusb
+	
+	Parameters:
+		status:			The error status return from a libusb function
+		additonal_info	Optional, adds more detail to the error string
+*/
 
+void ws_usb_error(int status, const char* additonal_info);
 
 #endif
