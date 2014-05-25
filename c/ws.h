@@ -415,4 +415,12 @@ int ws_read_multiple_weather_records(ws_device *dev, int address_from, int addre
 
 void ws_usb_error(int status, const char* additonal_info);
 
+/**
+	Prints a 32 byte memory block to the screen
+	
+	Parameters:
+		block		The memory block to be printed. Must be 32 bytes;
+*/
+
+void ws_print_block(unsigned char* block);
 #endif
