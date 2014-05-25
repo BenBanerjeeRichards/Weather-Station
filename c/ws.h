@@ -419,8 +419,8 @@ void ws_usb_error(int status, const char* additonal_info);
 	Prints a 32 byte memory block to the screen
 	
 	Parameters:
-		block		The memory block to be printed. Must be 32 bytes;
+		data		The memory block to be printed. Must be 32 bytes;
 */
 
-void ws_print_block(unsigned char* block);
+void ws_print_block(unsigned char* data);
 #endif
