@@ -162,3 +162,16 @@ int ws_latest_record_address(ws_device *dev, int *address)
 	return WS_SUCCESS;
 }
 
+void ws_print_block(unsigned char* data)
+{
+	for (int i = 0; i < 32; i++)
+	{	
+		printf("%0x\t", data[i]);
+		
+		if ((i + 1) % 8)
+		{
+			printf("\n");
+		}
+	}
+}
+
