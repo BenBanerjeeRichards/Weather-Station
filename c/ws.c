@@ -146,7 +146,7 @@ int ws_latest_record_address(ws_device *dev, int *address)
 	unsigned char data[32];
 	int read;
 	*address = 0;
-	int status = ws_read_block(dev, 0x0, data, &read);
+	int status = ws_read_block(dev, 0x00, data, &read);
 	if (status != WS_SUCCESS)
 	{
 		return status;
@@ -157,7 +157,12 @@ int ws_latest_record_address(ws_device *dev, int *address)
 		return WS_ERR_TOO_LITTLE_DATA_READ;
 	}
 	
-	*address = data[30];
+	uint8_t byte1 = data[30];
+	uint8_t byte2 = data[31];
+	uint16_t byte;
+	
+	byte = ((byte1 << 8) | byte2);
+	*address = byte;
 	
 	return WS_SUCCESS;
 }
@@ -168,10 +173,12 @@ void ws_print_block(unsigned char* data)
 	{	
 		printf("%0x\t", data[i]);
 		
-		if ((i + 1) % 8)
+		if ((i + 1) % 8 == 0)
 		{
 			printf("\n");
 		}
 	}
+	
+	printf("\n\n");
 }
 
