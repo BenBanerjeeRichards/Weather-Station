@@ -441,4 +441,18 @@ void ws_print_block(unsigned char* data);
 		blocks		The number of blocks to print, giving -1 will print all of the data
 */
 void ws_print_mem_dump(ws_device *dev, int blocks);
+
+
+/*
+	Takes two bytes and gets their value by combining them into a uint16_t
+	
+	Parameters:
+		byte1:		The most significant byte
+		byte2		The least significant byte
+*/
+static uint16_t ws_value_of_bytes(uint8_t byte1, uint8_t byte2);
+
+
+
+
 #endif
