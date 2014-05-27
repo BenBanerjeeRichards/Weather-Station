@@ -323,7 +323,7 @@ int ws_read_block(ws_device *dev, int address, unsigned char* data, int* read);
 	the data is stored in a circular buffer where old data is overwritten when the memory has all
 	been used up.   
 	
-	This address is stored in the fixed block memory, at position 0x1E.
+	This address is stored in the fixed block memory, at position 0x1E and 0x1F.
 	
 	Parameters:
 		- dev: 			A device struct for the device 
@@ -423,4 +423,22 @@ void ws_usb_error(int status, const char* additonal_info);
 */
 
 void ws_print_block(unsigned char* data);
+
+
+/**
+	Prints the memory of the device to stdout.
+	
+	NOTE: **** VERY DANGEROUS FUNCTION ****
+	Do not use in a production situation.
+	Can cause hardaware issues and require the device to be reconnected if this
+	function is disrupted in some circumstances (for example, memory reads can become
+	offset by 0x8, pipe errors can occur in control transfers etc...)
+	
+	For this reason, it is reccomended that the redirected to a file, and read from there 
+	instead of interupting this function.
+	
+	Parameters:
+		blocks		The number of blocks to print, giving -1 will print all of the data
+*/
+void ws_print_mem_dump(ws_device *dev, int blocks);
 #endif
