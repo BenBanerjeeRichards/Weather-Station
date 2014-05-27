@@ -454,7 +454,13 @@ void ws_print_mem_dump(ws_device *dev, int blocks);
 
 uint16_t ws_value_of_bytes(uint8_t byte1, uint8_t byte2);
 
-
+/*
+	Prints the value of a weather record to stdout
+	
+	Parameter:
+		record:		The record to print out
+*/
+void ws_print_weather_record(ws_weather_record record);
 
 
 #endif

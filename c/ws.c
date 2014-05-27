@@ -255,6 +255,23 @@ void ws_print_mem_dump(ws_device *dev, int blocks)
 		
 }
 
+void ws_print_weather_record(ws_weather_record record)
+{
+	printf("Indoor Humidity:\t\t %i%% \n", record.indoor_humidity);
+	printf("Outdoor Humidity:\t\t %i%% \n", record.outdoor_humidity);
+	printf("Indoor Temperature:\t\t %f°C\n", record.indoor_temperature);
+	printf("Outdoor Temperature:\t\t %f°C\n", record.outdoor_temperature);
+	printf("Pressure:\t\t\t %fhPa\n", record.pressure);
+	printf("Wind Speed:\t\t\t %fm/s\n", record.wind_speed);
+	printf("Gust Speed:\t\t\t %fm/s\n", record.gust_speed);
+	printf("Wind Direction:\t\t\t %f° from north\n", record.wind_direction);
+	printf("Total Rain:\t\t\t %fmm\n", record.total_rain);
+	printf("Counter Overflow:\t\t %s\n", (record.status.rain_counter_overflow) ? "true" : "false");
+	printf("Contact Error:\t\t\t %s\n", (record.status.sensor_contact_error) ? "true" : "false");
+	printf("\n");
+}
+
+
 uint16_t ws_value_of_bytes(uint8_t byte1, uint8_t byte2)
 {
 	return ((byte1 << 8) | byte2);
