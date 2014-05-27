@@ -104,7 +104,7 @@ int ws_read_block(ws_device *dev, int address, unsigned char* data, int* read)
 	unsigned char address_low = address % 256;
 	
 	unsigned char write_data[8];
-	write_data[0] = 0xA1;
+	write_data[0] = 0xA1;	
 	write_data[1] = address_high;
 	write_data[2] = address_low;
 	write_data[3] = 0x20;
@@ -167,6 +167,33 @@ int ws_latest_record_address(ws_device *dev, int *address)
 	return WS_SUCCESS;
 }
 
+int ws_process_record_data(unsigned char *data, ws_weather_record *record)
+{
+	record->indoor_humidity = data[1];
+	record->outdoor_humidity = data[4];
+	record->indoor_temperature = 0.1 * ws_value_of_bytes(data[3], data[2]);
+	record->outdoor_temperature = 0.1 * ws_value_of_bytes(data[6], data[5]);
+	record->pressure = 0.1 * ws_value_of_bytes(data[8], data[7]);
+
+	uint8_t wind_speed_low = data[9];
+	uint8_t wind_speed_high = data[11] & 0xF;
+	record->wind_speed = 0.1 * ((wind_speed_high >> 8) | wind_speed_low);
+	
+	uint8_t gusting_low = data[10];
+	uint8_t gusting_high = (data[11] >> 4);
+	record->gust_speed = 0.1 * ((gusting_high >> 8) | gusting_low);
+	
+	record->wind_direction = 22.5 * data[12];
+	record->total_rain = 0.3 * ws_value_of_bytes(data[14], data[13]);
+	
+	int rain_overflow_mask = 0x80;
+	int contact_lost_mask = 0x40;
+	
+	record->status.sensor_contact_error = ((data[15] & contact_lost_mask) == contact_lost_mask);
+	record->status.rain_counter_overflow = ((data[15] & rain_overflow_mask) == rain_overflow_mask);
+
+	return WS_SUCCESS;
+}
 
 void ws_print_block(unsigned char* data)
 {
@@ -226,5 +253,10 @@ void ws_print_mem_dump(ws_device *dev, int blocks)
 		
 	}
 		
+}
+
+uint16_t ws_value_of_bytes(uint8_t byte1, uint8_t byte2)
+{
+	return ((byte1 << 8) | byte2);
 }
 
