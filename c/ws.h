@@ -114,6 +114,7 @@ typedef struct
 	double gust_speed;
 	double wind_direction;
 	
+	double total_rain;
 	ws_station_status status;
 
 } ws_weather_record;  
@@ -450,7 +451,8 @@ void ws_print_mem_dump(ws_device *dev, int blocks);
 		byte1:		The most significant byte
 		byte2		The least significant byte
 */
-static uint16_t ws_value_of_bytes(uint8_t byte1, uint8_t byte2);
+
+uint16_t ws_value_of_bytes(uint8_t byte1, uint8_t byte2);
 
 
 
