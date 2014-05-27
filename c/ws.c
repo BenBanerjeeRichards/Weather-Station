@@ -157,8 +157,8 @@ int ws_latest_record_address(ws_device *dev, int *address)
 		return WS_ERR_TOO_LITTLE_DATA_READ;
 	}
 	
-	uint8_t byte1 = data[30];
-	uint8_t byte2 = data[31];
+	uint8_t byte2 = data[30];
+	uint8_t byte1 = data[31];
 	uint16_t byte;
 	
 	byte = ((byte1 << 8) | byte2);
@@ -166,6 +166,7 @@ int ws_latest_record_address(ws_device *dev, int *address)
 	
 	return WS_SUCCESS;
 }
+
 
 void ws_print_block(unsigned char* data)
 {
@@ -180,5 +181,50 @@ void ws_print_block(unsigned char* data)
 	}
 	
 	printf("\n\n");
+}
+
+void ws_print_mem_dump(ws_device *dev, int blocks)
+{
+	// NOTE: **** VERY DANGEROUS FUNCTION ****
+	// Do not use in a production situation
+	// can cause hardaware issues and require the device to be reconnected if this
+	// function is disrupted in some circumstances (for example, memory reads can become
+	// offset by 0x8, pipe errors can occur in control transfers etc...)
+	
+	blocks = (blocks == -1) ? 0x10000 : blocks;
+	int address = 0x0;
+	unsigned char data[32];
+	int read;
+
+	for (int j = 0; j < blocks; j++)
+	{
+	
+		int status = ws_read_block(dev, address, data, &read);
+		
+		if (status != WS_SUCCESS)
+		{
+			printf("an error occured\n");	// TODO 
+		}	
+		
+		for (int i = 0; i < 32; i++)
+		{	
+			if (i % 8 == 0)
+			{
+				printf("0x%0x\t", address);
+			}	
+			
+			printf("%0x\t", data[i]);
+			
+			if ((i + 1) % 8 == 0)
+			{
+				address += 0x8;
+				printf("\n");
+			}
+		}
+		
+		printf("\n");
+		
+	}
+		
 }
 
