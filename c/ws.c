@@ -227,9 +227,7 @@ int ws_read_fixed_block_data(ws_device *dev, unsigned char* fixed_block_data, in
 			return status;
 		}
 
-		printf("prepare yourself %i\n", (i / 0x20) * 32);
 		memcpy(&fixed_block_data[(i / 0x20) * 32], data, 32);
-		printf("done\n");
 		*read += rd;
 	}
 
