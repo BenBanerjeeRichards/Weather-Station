@@ -216,7 +216,7 @@ void ws_print_mem_dump(ws_device *dev, int blocks)
 	// Do not use in a production situation
 	// can cause hardaware issues and require the device to be reconnected if this
 	// function is disrupted in some circumstances (for example, memory reads can become
-	// offset by 0x8, pipe errors can occur in control transfers etc...)
+	// offset by 0x8, pipe errors can occur in control transfers etc...) 
 	
 	blocks = (blocks == -1) ? 0x10000 : blocks;
 	int address = 0x0;
