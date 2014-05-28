@@ -195,6 +195,25 @@ int ws_process_record_data(unsigned char *data, ws_weather_record *record)
 	return WS_SUCCESS;
 }
 
+int ws_read_weather_record(ws_device *dev, int address, ws_weather_record *record)
+{
+	if (address < 0x100 || address > 0x10000)
+	{
+		return WS_ERR_INVALID_ADDR;
+	}
+	
+	//Round down to nearest 16
+	address = address - (address % 16);
+	
+	unsigned char data[32];
+	int read;
+	ws_read_block(dev, address, data, &read);
+	ws_process_record_data(data, record);
+	
+	return WS_SUCCESS;
+
+}
+
 void ws_print_block(unsigned char* data)
 {
 	for (int i = 0; i < 32; i++)
