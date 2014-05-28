@@ -10,17 +10,17 @@
     http://stackoverflow.com/questions/9907160/how-to-convert-enum-names-to-string-in-c
 */
 
-#define FOREACH_WS_ERR(ERROR) 		\
-	ERROR(WS_ERR_NO_STATION_FOUND) 		\
-	ERROR(WS_ERR_USB_INIT_FAILED) 	\
+#define FOREACH_WS_ERR(ERROR) 				\
+	ERROR(WS_ERR_NO_STATION_FOUND) 			\
+	ERROR(WS_ERR_USB_INIT_FAILED) 			\
 	ERROR(WS_ERR_INTERFACE_CLAIM_FAILED) 	\
-	ERROR(WS_ERR_INVALID_PERMISSIONS) 	\
+	ERROR(WS_ERR_INVALID_PERMISSIONS) 		\
 	ERROR(WS_ERR_CONTROL_TRANSFER_FAILED) 	\
-	ERROR(WS_ERR_BULK_TRANSFER_FAILED) 	\
-	ERROR(WS_ERR_INVALID_ADDR) 	\
-	ERROR(WS_ERR_NO_DEVICE)		\
-	ERROR(WS_ERR_OPEN_FAILED) \
-	ERROR(WS_ERR_TOO_LITTLE_DATA_READ) \
+	ERROR(WS_ERR_BULK_TRANSFER_FAILED)	 	\
+	ERROR(WS_ERR_INVALID_ADDR) 				\
+	ERROR(WS_ERR_NO_DEVICE)					\
+	ERROR(WS_ERR_OPEN_FAILED) 				\
+	ERROR(WS_ERR_TOO_LITTLE_DATA_READ) 		\
 	
 #define GENERATE_ENUM(ENUM) ENUM,
 #define GENERATE_STRING(STRING) #STRING,
@@ -282,18 +282,18 @@ int ws_initialise_read(ws_device *dev);
 	
 	This data can be read in single 32 byte chunks by calling ws_read_block(), which should be used 
 	if only specific chunks are required, due to the fact that reading 256 bytes of data takes longer 
-	thatn only 32.
+	that only 32.
 	
 	Parameters:
 		- dev: 		A device struct for the device to be read from
-		- data:  char	The data array
+		- data:  	The data array
 	
 	Return:
 		- WS_ERR_CONTROL_TRANSFER_FAILED	Request for data write failed
 		- WS_ERR_BULK_TRANSFER_FAILED		Data read failed 
 */
 
-int ws_read_fixed_block(ws_device *dev, unsigned char* data, int* read);
+int ws_read_fixed_block_data(ws_device *dev, unsigned char* fixed_block_data, int* read);
 
 
 /**

@@ -207,12 +207,36 @@ int ws_read_weather_record(ws_device *dev, int address, ws_weather_record *recor
 	
 	unsigned char data[32];
 	int read;
-	ws_read_block(dev, address, data, &read);
+	ws_read_block(dev, address, data, &read);  
 	ws_process_record_data(data, record);
 	
 	return WS_SUCCESS;
 
 }
+
+int ws_read_fixed_block_data(ws_device *dev, unsigned char* fixed_block_data, int* read)
+{
+	unsigned char data[32];
+	int rd;
+
+	for (int i = 0; i < 0x100; i += 0x20)
+	{
+		int status = ws_read_block(dev, i, data, &rd);
+		if (status != WS_SUCCESS)
+		{
+			return status;
+		}
+
+		printf("prepare yourself %i\n", (i / 0x20) * 32);
+		memcpy(&fixed_block_data[(i / 0x20) * 32], data, 32);
+		printf("done\n");
+		*read += rd;
+	}
+
+	return WS_SUCCESS;
+}
+
+
 
 void ws_print_block(unsigned char* data)
 {
@@ -221,7 +245,7 @@ void ws_print_block(unsigned char* data)
 		printf("%0x\t", data[i]);
 		
 		if ((i + 1) % 8 == 0)
-		{
+		{  
 			printf("\n");
 		}
 	}
