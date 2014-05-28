@@ -147,7 +147,7 @@ typedef struct
 
 /**
 	Holds all of the extreme values (min-maxes)
-	Note that rain extremes have no minimums
+	Note that rain extremes have no minimums, so they will be set to 0.
 */
 
 typedef struct 
@@ -430,13 +430,12 @@ void ws_print_block(unsigned char* data);
 	Prints the memory of the device to stdout.
 	
 	NOTE: **** VERY DANGEROUS FUNCTION ****
-	Do not use in a production situation.
-	Can cause hardaware issues and require the device to be reconnected if this
-	function is disrupted in some circumstances (for example, memory reads can become
-	offset by 0x8, pipe errors can occur in control transfers etc...)
-	
-	For this reason, it is reccomended that the redirected to a file, and read from there 
-	instead of interupting this function.
+	=======================================
+	Dangerous as it can run for a long time; interupting it has a high chance of 
+	interupting a usb read or write. This can cause following attempts to retrieve
+	data to fail: a common issue is that the data is shifted down by 8 bytes, meaning
+	that other parts of the program which assume a constant address end up reading 
+	the wrong data or even worse random garbage from the host's memory.
 	
 	Parameters:
 		blocks		The number of blocks to print, giving -1 will print all of the data
