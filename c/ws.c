@@ -234,6 +234,38 @@ int ws_read_fixed_block_data(ws_device *dev, unsigned char* fixed_block_data, in
 	return WS_SUCCESS;
 }
 
+int ws_read_weather_extremes(ws_device *dev, ws_weather_extremes *extremes)
+{
+	unsigned char data[256];
+	int read;
+
+	int status = ws_read_fixed_block_data(dev, data, &read);
+	if (status != WS_SUCCESS)
+	{
+		return status;
+	}
+
+	extremes->indoor_humidity.max = data[98];
+	extremes->indoor_humidity.min = data[99];
+
+	return WS_SUCCESS;
+}
+
+ws_time ws_decode_bcd(unsigned char* time_data)
+{
+	ws_time decoded_time;
+	decoded_time.year = ws_decode_bcd_byte(time_data[0]);
+
+	return decoded_time;
+}
+
+unsigned char ws_decode_bcd_byte(unsigned char byte)
+{  
+	unsigned char high = byte / 16;
+	unsigned char low = byte & 0x0F;
+
+	return (high * 10) + low;
+}
 
 
 void ws_print_block(unsigned char* data)
