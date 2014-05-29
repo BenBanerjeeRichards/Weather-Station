@@ -246,6 +246,7 @@ int ws_read_weather_extremes(ws_device *dev, ws_weather_extremes *extremes)
 		return status;
 	}
 
+	// *** Indoor Humidity *** //
 	extremes->indoor_humidity.max = data[98];
 	extremes->indoor_humidity.min = data[99];
 
@@ -254,6 +255,17 @@ int ws_read_weather_extremes(ws_device *dev, ws_weather_extremes *extremes)
 
 	memcpy(time_data, &data[146], 5);
 	extremes->indoor_humidity.min_time = ws_decode_bcd(time_data);
+
+	// *** Outdoor Humidity *** //
+	extremes->outdoor_humidity.max = data[100];
+	extremes->outdoor_humidity.min = data[101];
+
+	memcpy(time_data, &data[151], 5);
+	extremes->outdoor_humidity.max_time = ws_decode_bcd(time_data);
+
+	memcpy(time_data, &data[156], 5);
+	extremes->outdoor_humidity.min_time = ws_decode_bcd(time_data);
+
 
 	return WS_SUCCESS;
 }
