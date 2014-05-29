@@ -407,6 +407,16 @@ int ws_read_weather_record(ws_device *dev, int address, ws_weather_record *recor
 int ws_read_multiple_weather_records(ws_device *dev, int address_from, int address_to, ws_weather_record ***record, int *record_count);
 
 /**
+	Reads the fixed block memory and processes it, filling the weather exteames in the ws_weather_extremes struct
+
+	Parameters:
+		- dev: 				The weather station device
+		- extremes 			The struct for storing all of the extremes
+
+*/
+int ws_read_weather_extremes(ws_device *dev, ws_weather_extremes *extremes);
+
+/**
 	Prints an error from libusb
 	
 	Parameters:
@@ -461,5 +471,37 @@ uint16_t ws_value_of_bytes(uint8_t byte1, uint8_t byte2);
 */
 void ws_print_weather_record(ws_weather_record record);
 
+/*
+	Decodes a Binary Coded Decimal (BDC) and puts the decoded data in the struct.
 
+	Parameters:
+		time_data 	The raw time data. Must be 5 bytes long. (this is an assumption)
+
+	Return: 
+		The decodeed time 
+*/
+
+/**
+	Prints the contents of a ws_min_max (debug function). 
+
+	Parameters:
+		min_max 	The min-max struct to be printed
+		value_name	The name of the value
+
+*/
+void ws_print_min_max(ws_min_max max_min, const char* value_name);
+
+ws_time ws_decode_bcd(unsigned char* time_data);
+
+/**
+	Decodes a  single Binary Coded Decimal byte
+
+	Parameter:
+		byte 	The byte to decode
+
+	Returns
+		The decoded byte
+*/
+
+unsigned char ws_decode_bcd_byte(unsigned char byte);
 #endif
