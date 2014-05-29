@@ -237,6 +237,7 @@ int ws_read_fixed_block_data(ws_device *dev, unsigned char* fixed_block_data, in
 int ws_read_weather_extremes(ws_device *dev, ws_weather_extremes *extremes)
 {
 	unsigned char data[256];
+	unsigned char time_data[5];
 	int read;
 
 	int status = ws_read_fixed_block_data(dev, data, &read);
@@ -248,6 +249,12 @@ int ws_read_weather_extremes(ws_device *dev, ws_weather_extremes *extremes)
 	extremes->indoor_humidity.max = data[98];
 	extremes->indoor_humidity.min = data[99];
 
+	memcpy(time_data, &data[141], 5);
+	extremes->indoor_humidity.max_time = ws_decode_bcd(time_data);
+
+	memcpy(time_data, &data[146], 5);
+	extremes->indoor_humidity.min_time = ws_decode_bcd(time_data);
+
 	return WS_SUCCESS;
 }
 
@@ -255,6 +262,10 @@ ws_time ws_decode_bcd(unsigned char* time_data)
 {
 	ws_time decoded_time;
 	decoded_time.year = ws_decode_bcd_byte(time_data[0]);
+	decoded_time.month = ws_decode_bcd_byte(time_data[1]);
+	decoded_time.day = ws_decode_bcd_byte(time_data[2]);
+	decoded_time.hour = ws_decode_bcd_byte(time_data[3]);
+	decoded_time.minute = ws_decode_bcd_byte(time_data[4]);
 
 	return decoded_time;
 }
@@ -321,6 +332,18 @@ void ws_print_mem_dump(ws_device *dev, int blocks)
 	}
 		
 }
+
+void ws_print_min_max(ws_min_max max_min, const char* value_name)
+{
+	printf("\n");
+	printf("%s max: %f\n", value_name, max_min.max);
+	printf("\t On the %i/%i/%i at %i:%i\n", max_min.max_time.day,  max_min.max_time.month,  max_min.max_time.year,  max_min.max_time.hour,  max_min.max_time.minute);
+	printf("%s min: %f\n", value_name, max_min.min);
+	printf("\t On the %i/%i/%i at %i:%i\n", max_min.min_time.day,  max_min.min_time.month,  max_min.min_time.year,  max_min.min_time.hour,  max_min.min_time.minute);
+	printf("\n");
+
+}
+
 
 void ws_print_weather_record(ws_weather_record record)
 {
