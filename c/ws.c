@@ -403,3 +403,16 @@ int16_t ws_decode_signed_short(uint8_t byte_1, uint8_t byte_2)
 	int16_t value = ((byte_1 & 0x7F) << 8) | byte_2;
 	return ((byte_1 & 0x80) == 0x80) ? -value : value;
 }
+
+int ws_cmp_data(unsigned char* data_1, unsigned char* data_2, int length)
+{
+	for (int i = 0; i < length; i++)
+	{
+		if (data_1[i] != data_2[i])
+		{
+			return 0;
+		}
+	}
+
+	return 1;
+}
