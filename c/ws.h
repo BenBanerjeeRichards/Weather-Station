@@ -491,6 +491,16 @@ void ws_print_weather_record(ws_weather_record record);
 */
 void ws_print_min_max(ws_min_max max_min, const char* value_name);
 
+
+/**
+	Decodes a BCD date, given as 5 raw data bytes.
+
+	Parameter:
+		time_data 		The raw time data
+
+	Return:
+		The struct ws_time containing the decoded data
+*/
 ws_time ws_decode_bcd(unsigned char* time_data);
 
 /**
