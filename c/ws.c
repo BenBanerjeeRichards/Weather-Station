@@ -313,7 +313,45 @@ int ws_read_weather_extremes(ws_device *dev, ws_weather_extremes *extremes)
 	extremes->wind_speed.min_time = ws_decode_bcd(blank_time_data);
 
 	// *** Gust Speed *** //
-	
+	extremes->gust_speed.max = 0.1 * ws_value_of_bytes(data[129], data[128]);
+	extremes->gust_speed.min = 0;
+
+	memcpy(time_data, &data[226], 5);
+	extremes->gust_speed.max_time = ws_decode_bcd(time_data);
+	extremes->gust_speed.min_time = ws_decode_bcd(blank_time_data);
+
+	// *** Rain Extremes *** //
+	extremes->rain_hourly.max = 0.1 * ws_value_of_bytes(data[131], data[130]);
+	extremes->rain_daily.max = 0.1 * ws_value_of_bytes(data[133], data[132]);
+	extremes->rain_weekly.max = 0.1 * ws_value_of_bytes(data[135], data[134]);
+	extremes->rain_monthly.max = 0.1 * ws_value_of_bytes(data[137], data[136]);
+	extremes->rain_total.max = 0.1 * ws_value_of_bytes(data[139], data[138]);
+
+	extremes->rain_hourly.min = 0;
+	extremes->rain_daily.min = 0;
+	extremes->rain_weekly.min = 0;
+	extremes->rain_monthly.min = 0;
+	extremes->rain_total.min = 0;
+
+	memcpy(time_data, &data[231], 5);
+	extremes->rain_hourly.max_time = ws_decode_bcd(time_data);
+	extremes->rain_hourly.min_time = ws_decode_bcd(blank_time_data);
+
+	memcpy(time_data, &data[236], 5);
+	extremes->rain_daily.max_time = ws_decode_bcd(time_data);
+	extremes->rain_daily.min_time = ws_decode_bcd(blank_time_data);
+
+	memcpy(time_data, &data[241], 5);
+	extremes->rain_weekly.max_time = ws_decode_bcd(time_data);
+	extremes->rain_weekly.min_time = ws_decode_bcd(blank_time_data);
+
+	memcpy(time_data, &data[246], 5);
+	extremes->rain_monthly.max_time = ws_decode_bcd(time_data);
+	extremes->rain_monthly.min_time = ws_decode_bcd(blank_time_data);
+
+	memcpy(time_data, &data[251], 5);
+	extremes->rain_total.max_time = ws_decode_bcd(time_data);
+	extremes->rain_total.min_time = ws_decode_bcd(blank_time_data);
 	return WS_SUCCESS;
 }
 
