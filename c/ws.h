@@ -501,7 +501,19 @@ void ws_print_weather_record(ws_weather_record record);
 		value_name	The name of the value
 
 */
+
 void ws_print_min_max(ws_min_max max_min, const char* value_name);
+
+/**
+	Prints out the value of all of the weather extremes
+
+	Parameters:
+		extremes 		The extreme struct 
+
+*/
+
+void ws_print_weather_extremes(ws_weather_extremes extremes);
+
 
 
 /**

@@ -464,7 +464,6 @@ void ws_print_min_max(ws_min_max max_min, const char* value_name)
 	printf("%s min: %f", value_name, max_min.min);
 	printf("\t on the %i/%i/%i at %i:%i\n", max_min.min_time.day,  max_min.min_time.month,  max_min.min_time.year,  max_min.min_time.hour,  max_min.min_time.minute);
 	printf("\n");
-
 }
 
 
@@ -483,6 +482,27 @@ void ws_print_weather_record(ws_weather_record record)
 	printf("Contact Error:\t\t\t %s\n", (record.status.sensor_contact_error) ? "true" : "false");
 	printf("\n");
 }
+
+void ws_print_weather_extremes(ws_weather_extremes extremes)
+{
+	ws_print_min_max(extremes.indoor_humidity, "Indoor Humidity");
+	ws_print_min_max(extremes.outdoor_humidity, "Outdoor Humidity");
+	ws_print_min_max(extremes.indoor_temperature, "Indoor Temperature");
+	ws_print_min_max(extremes.outdoor_temperature, "Outdoor Temperature");
+	ws_print_min_max(extremes.wind_chill, "Wind Chill");
+	ws_print_min_max(extremes.dew_point, "Dew Point");
+	ws_print_min_max(extremes.relative_pressure, "Relative Pressure");
+	ws_print_min_max(extremes.absolute_pressure, "Absolute Pressure");
+	ws_print_min_max(extremes.wind_speed, "Wind Speed");
+	ws_print_min_max(extremes.gust_speed, "Gust Speed");
+	ws_print_min_max(extremes.rain_hourly, "Rain Hourly");
+	ws_print_min_max(extremes.rain_weekly, "Rain Weekly");
+	ws_print_min_max(extremes.rain_daily, "Rain Daily");
+	ws_print_min_max(extremes.rain_monthly, "Rain Monthly");
+	ws_print_min_max(extremes.rain_total, "Rain Total");
+
+}
+
 
 
 uint16_t ws_value_of_bytes(uint8_t byte1, uint8_t byte2)
