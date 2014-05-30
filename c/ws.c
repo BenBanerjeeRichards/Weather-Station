@@ -266,6 +266,8 @@ int ws_read_weather_extremes(ws_device *dev, ws_weather_extremes *extremes)
 	memcpy(time_data, &data[156], 5);
 	extremes->outdoor_humidity.min_time = ws_decode_bcd(time_data);
 
+	
+
 
 	return WS_SUCCESS;
 }
