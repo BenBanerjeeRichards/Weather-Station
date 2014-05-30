@@ -58,7 +58,6 @@ int ws_init(ws_device *dev)
 		ws_usb_error(status, "ws_init::libusb_open");
 		return WS_ERR_OPEN_FAILED;  
 	}
-	
 
 	return WS_SUCCESS;
 }
@@ -352,6 +351,7 @@ int ws_read_weather_extremes(ws_device *dev, ws_weather_extremes *extremes)
 	memcpy(time_data, &data[251], 5);
 	extremes->rain_total.max_time = ws_decode_bcd(time_data);
 	extremes->rain_total.min_time = ws_decode_bcd(blank_time_data);
+
 	return WS_SUCCESS;
 }
 
@@ -378,7 +378,6 @@ ws_min_max ws_read_stddec_extreme(unsigned char *data, int is_unsigned, int addr
 	extreme.min_time = ws_decode_bcd(time_data);
 
 	return extreme;
-
 }
 
 ws_time ws_decode_bcd(unsigned char* time_data)
@@ -449,9 +448,8 @@ void ws_print_mem_dump(ws_device *dev, int blocks)
 				printf("\n");
 			}
 		}
-		
+
 		printf("\n");
-		
 	}
 		
 }
@@ -500,7 +498,6 @@ void ws_print_weather_extremes(ws_weather_extremes extremes)
 	ws_print_min_max(extremes.rain_daily, "Rain Daily");
 	ws_print_min_max(extremes.rain_monthly, "Rain Monthly");
 	ws_print_min_max(extremes.rain_total, "Rain Total");
-
 }
 
 
