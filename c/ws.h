@@ -525,4 +525,17 @@ ws_time ws_decode_bcd(unsigned char* time_data);
 */
 
 unsigned char ws_decode_bcd_byte(unsigned char byte);
+
+/**
+	Compares unsigned char array data_1 to data_2, assuming an equal length of length bytes.
+
+	Parameters:
+		data_1		Array 1   ----____ To be compared
+		data_2		Array 2   ----	   to eachover
+		length		The length of the arrays
+
+	Return:
+		0 if the arrays are not equal, 1 if they are equal.
+*/
+int ws_cmp_data(unsigned char* data_1, unsigned char* data_2, int length);
 #endif
