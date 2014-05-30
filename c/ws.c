@@ -459,10 +459,10 @@ void ws_print_mem_dump(ws_device *dev, int blocks)
 void ws_print_min_max(ws_min_max max_min, const char* value_name)
 {
 	printf("\n");
-	printf("%s max: %f\n", value_name, max_min.max);
-	printf("\t On the %i/%i/%i at %i:%i\n", max_min.max_time.day,  max_min.max_time.month,  max_min.max_time.year,  max_min.max_time.hour,  max_min.max_time.minute);
-	printf("%s min: %f\n", value_name, max_min.min);
-	printf("\t On the %i/%i/%i at %i:%i\n", max_min.min_time.day,  max_min.min_time.month,  max_min.min_time.year,  max_min.min_time.hour,  max_min.min_time.minute);
+	printf("%s max: %f", value_name, max_min.max);
+	printf("\t on the %i/%i/%i at %i:%i\n", max_min.max_time.day,  max_min.max_time.month,  max_min.max_time.year,  max_min.max_time.hour,  max_min.max_time.minute);
+	printf("%s min: %f", value_name, max_min.min);
+	printf("\t on the %i/%i/%i at %i:%i\n", max_min.min_time.day,  max_min.min_time.month,  max_min.min_time.year,  max_min.min_time.hour,  max_min.min_time.minute);
 	printf("\n");
 
 }
