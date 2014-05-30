@@ -538,4 +538,31 @@ unsigned char ws_decode_bcd_byte(unsigned char byte);
 		0 if the arrays are not equal, 1 if they are equal.
 */
 int ws_cmp_data(unsigned char* data_1, unsigned char* data_2, int length);
+
+/**
+	Function reads a stable block. Reads blocks from the device until they are
+	the same. This prevents reading corrupt data if the device is writing.
+	Therefore, this function is slower then ws_read_block, but much safer.
+	
+	Parameters:
+		- dev: 					A device struct for the device to be read from
+		- data:  				The data array
+		
+		- address:				The address to be read from. Note that this number
+								will be rounded down to the nearest multiple of 32, 
+								as all data is read in 32 byte chunks
+								
+								The memory is in the range of 0x0000 -> 0xFFFF. Weather
+								records start at 0x100
+		
+		- read					The number of bytes read					
+								
+	Return:
+		- WS_ERR_CONTROL_TRANSFER_FAILED	Request for data write failed
+		- WS_ERR_BULK_TRANSFER_FAILED		Data read failed 
+
+*/
+int ws_read_stable_block(ws_device *dev, int address, unsigned char* data, int* read);
+
+
 #endif

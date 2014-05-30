@@ -141,6 +141,35 @@ int ws_read_block(ws_device *dev, int address, unsigned char* data, int* read)
 	return WS_SUCCESS;
 }
 
+int ws_read_stable_block(ws_device *dev, int address, unsigned char* data, int* read)
+{
+	unsigned char block1[32];
+	unsigned char block2[32];
+	int rd = 0;
+	int status;
+
+	do
+	{
+		status = ws_read_block(dev, address, block1, &rd);
+		if (status != WS_SUCCESS)
+		{
+			return status;
+		}
+
+		status = ws_read_block(dev, address, block2, &rd);
+		if (status != WS_SUCCESS)
+		{
+			return status;
+		}
+	} while (!ws_cmp_data(block1, block2, 32));
+
+	memcpy(data, &block1, 32);
+	*read = rd;
+
+	return WS_SUCCESS;
+}
+
+
 int ws_latest_record_address(ws_device *dev, int *address)
 {
 	unsigned char data[32];
