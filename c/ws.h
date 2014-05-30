@@ -452,6 +452,17 @@ void ws_print_block(unsigned char* data);
 */
 void ws_print_mem_dump(ws_device *dev, int blocks);
 
+/**
+	Decodes a signed short (taking into account sign bit)
+
+	Parameter:
+		byte_1		First byte
+		byte_2		Second byte
+
+	Return:
+		Decoded value as a uint16_t
+*/
+int16_t ws_decode_signed_short(uint8_t byte_1, uint8_t byte_2);
 
 /*
 	Takes two bytes and gets their value by combining them into a uint16_t
@@ -496,7 +507,7 @@ void ws_print_min_max(ws_min_max max_min, const char* value_name);
 	Decodes a BCD date, given as 5 raw data bytes.
 
 	Parameter:
-		time_data 		The raw time data
+		time_data 		The raw time data. Must be 5 bytes.
 
 	Return:
 		The struct ws_time containing the decoded data
