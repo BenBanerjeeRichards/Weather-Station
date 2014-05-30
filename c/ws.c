@@ -267,6 +267,7 @@ int ws_read_weather_extremes(ws_device *dev, ws_weather_extremes *extremes)
 {
 	unsigned char data[256];
 	unsigned char time_data[5];
+	unsigned char blank_time_data[] = {0x00, 0x00, 0x00, 0x00, 0x00};
 	int read;
 
 	int status = ws_read_fixed_block_data(dev, data, &read);
@@ -299,8 +300,20 @@ int ws_read_weather_extremes(ws_device *dev, ws_weather_extremes *extremes)
 	extremes->indoor_temperature = ws_read_stddec_extreme(data, 0, 102, 161);
 	extremes->outdoor_temperature = ws_read_stddec_extreme(data, 0, 106, 171);
 	extremes->wind_chill = ws_read_stddec_extreme(data, 0, 110, 181);
+	extremes->dew_point = ws_read_stddec_extreme(data, 0, 114, 191);
+	extremes->absolute_pressure = ws_read_stddec_extreme(data, 1, 118, 201);
+	extremes->relative_pressure = ws_read_stddec_extreme(data, 1, 122, 211);
 
+	// *** Average Wind Speed *** //
+	extremes->wind_speed.max = 0.1 * ws_value_of_bytes(data[127], data[126]);
+	extremes->wind_speed.min = 0;
 
+	memcpy(time_data, &data[221], 5);
+	extremes->wind_speed.max_time = ws_decode_bcd(time_data);
+	extremes->wind_speed.min_time = ws_decode_bcd(blank_time_data);
+
+	// *** Gust Speed *** //
+	
 	return WS_SUCCESS;
 }
 
