@@ -525,3 +525,19 @@ int ws_cmp_data(unsigned char* data_1, unsigned char* data_2, int length)
 
 	return 1;
 }
+
+const char* ws_get_str_error(int error_no)
+{
+	if (error_no == WS_SUCCESS)
+	{
+		return "WS_SUCCESS";
+	}
+
+	const char* error = ws_errors_string[error_no];
+	if (error == NULL)
+	{
+		return "Unknown Error Code";
+	}
+	return error;
+}
+

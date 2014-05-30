@@ -592,4 +592,16 @@ int ws_read_stable_block(ws_device *dev, int address, unsigned char* data, int* 
 */
 ws_min_max ws_read_stddec_extreme(unsigned char *data, int is_unsigned, int addr_value_begin, int addr_time_begin);
 
+/**
+	Gets the srting representation of an WS_ERR_* error
+
+	Parameters:
+		error_no		The error
+
+	Return:
+		The string representation of the error.
+
+*/
+const char* ws_get_str_error(int error_no);
+
 #endif
