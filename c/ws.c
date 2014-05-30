@@ -266,8 +266,15 @@ int ws_read_weather_extremes(ws_device *dev, ws_weather_extremes *extremes)
 	memcpy(time_data, &data[156], 5);
 	extremes->outdoor_humidity.min_time = ws_decode_bcd(time_data);
 
+	/** Indoor temperature **/
+	extremes->indoor_temperature.max = 0.1 * ws_decode_signed_short(data[103], data[102]);
+	extremes->indoor_temperature.min = 0.1 * ws_decode_signed_short(data[105], data[104]);
 
+	memcpy(time_data, &data[161], 5);
+	extremes->indoor_temperature.max_time = ws_decode_bcd(time_data);
 
+	memcpy(time_data, &data[166], 5);
+	extremes->indoor_temperature.min_time = ws_decode_bcd(time_data);
 
 	return WS_SUCCESS;
 }
@@ -384,6 +391,5 @@ uint16_t ws_value_of_bytes(uint8_t byte1, uint8_t byte2)
 int16_t ws_decode_signed_short(uint8_t byte_1, uint8_t byte_2)
 {
 	int16_t value = ((byte_1 & 0x7F) << 8) | byte_2;
-
 	return ((byte_1 & 0x80) == 0x80) ? -value : value;
 }
