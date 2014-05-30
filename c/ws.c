@@ -295,38 +295,39 @@ int ws_read_weather_extremes(ws_device *dev, ws_weather_extremes *extremes)
 	memcpy(time_data, &data[156], 5);
 	extremes->outdoor_humidity.min_time = ws_decode_bcd(time_data);
 
-	// *** Indoor Temperature *** //
-	extremes->indoor_temperature.max = 0.1 * ws_decode_signed_short(data[103], data[102]);
-	extremes->indoor_temperature.min = 0.1 * ws_decode_signed_short(data[105], data[104]);
-
-	memcpy(time_data, &data[161], 5);
-	extremes->indoor_temperature.max_time = ws_decode_bcd(time_data);
-
-	memcpy(time_data, &data[166], 5);
-	extremes->indoor_temperature.min_time = ws_decode_bcd(time_data);
-
-	// *** Outdoor Temperature *** //
-	extremes->outdoor_temperature.max = 0.1 * ws_decode_signed_short(data[107], data[106]);
-	extremes->outdoor_temperature.min = 0.1 * ws_decode_signed_short(data[109], data[108]);
-
-	memcpy(time_data, &data[171], 5);
-	extremes->outdoor_temperature.max_time = ws_decode_bcd(time_data);
-
-	memcpy(time_data, &data[176], 5);
-	extremes->outdoor_temperature.min_time = ws_decode_bcd(time_data);
-
-	// *** Wind Chill *** //
-	extremes->wind_chill.max = 0.1 * ws_decode_signed_short(data[111], data[110]);
-	extremes->wind_chill.min = 0.1 * ws_decode_signed_short(data[113], data[112]);
-
-	memcpy(time_data, &data[181], 5);
-	extremes->wind_chill.max_time = ws_decode_bcd(time_data);
-
-	memcpy(time_data, &data[186], 5);
-	extremes->wind_chill.min_time = ws_decode_bcd(time_data);
+	// *** Other Extremes *** //
+	extremes->indoor_temperature = ws_read_stddec_extreme(data, 0, 102, 161);
+	extremes->outdoor_temperature = ws_read_stddec_extreme(data, 0, 106, 171);
+	extremes->wind_chill = ws_read_stddec_extreme(data, 0, 110, 181);
 
 
 	return WS_SUCCESS;
+}
+
+ws_min_max ws_read_stddec_extreme(unsigned char *data, int is_unsigned, int addr_value_begin, int addr_time_begin)
+{
+	ws_min_max extreme;
+	unsigned char time_data[5];
+
+	if (is_unsigned == 0)
+	{
+		// Signed short
+		extreme.max = 0.1 * ws_decode_signed_short(data[addr_value_begin + 1], data[addr_value_begin]);
+		extreme.min = 0.1 * ws_decode_signed_short(data[addr_value_begin + 3], data[addr_value_begin + 2]);
+	} else {
+		// Signed short
+		extreme.max = 0.1 * ws_value_of_bytes(data[addr_value_begin + 1], data[addr_value_begin]);
+		extreme.min = 0.1 * ws_value_of_bytes(data[addr_value_begin + 3], data[addr_value_begin + 2]);
+	}
+
+	memcpy(time_data, &data[addr_time_begin], 5);
+	extreme.max_time = ws_decode_bcd(time_data);
+
+	memcpy(time_data, &data[addr_time_begin + 5], 5);
+	extreme.min_time = ws_decode_bcd(time_data);
+
+	return extreme;
+
 }
 
 ws_time ws_decode_bcd(unsigned char* time_data)

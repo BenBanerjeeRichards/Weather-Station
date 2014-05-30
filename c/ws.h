@@ -564,5 +564,19 @@ int ws_cmp_data(unsigned char* data_1, unsigned char* data_2, int length);
 */
 int ws_read_stable_block(ws_device *dev, int address, unsigned char* data, int* read);
 
+/**
+	Reads a high low (weather extreme) values and times. Very specific function, only works with some
+	of the weather types (values which are signed shorts/unsigned shorts and which require to be multiplied by 0.1).
+	
+	Parameters:
+		data: 				The data. Must be the 256 byte fixed block.
+		is_unsigned			Non zero value if the data is an unsigned short
+		addr_value_begin	Address where the value data begins 
+		addr_time_begin		Address where the time data begins 
+
+	Return
+		The min-max struct filled out with the data.
+*/
+ws_min_max ws_read_stddec_extreme(unsigned char *data, int is_unsigned, int addr_value_begin, int addr_time_begin);
 
 #endif
