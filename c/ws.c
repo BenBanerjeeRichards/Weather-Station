@@ -202,7 +202,7 @@ int ws_process_record_data(unsigned char *data, ws_weather_record *record)
 	record->outdoor_humidity = data[4];
 	record->indoor_temperature = 0.1 * ws_decode_signed_short(data[3], data[2]);
 	record->outdoor_temperature = 0.1 * ws_decode_signed_short(data[6], data[5]);
-	record->pressure = 0.1 * ws_value_of_bytes(data[8], data[7]);
+	record->absolute_pressure = 0.1 * ws_value_of_bytes(data[8], data[7]);
 
 	uint8_t wind_speed_low = data[9];
 	uint8_t wind_speed_high = data[11] & 0xF;
@@ -473,7 +473,7 @@ void ws_print_weather_record(ws_weather_record record)
 	printf("Outdoor Humidity:\t\t %i%% \n", record.outdoor_humidity);
 	printf("Indoor Temperature:\t\t %f°C\n", record.indoor_temperature);
 	printf("Outdoor Temperature:\t\t %f°C\n", record.outdoor_temperature);
-	printf("Pressure:\t\t\t %fhPa\n", record.pressure);
+	printf("Pressure:\t\t\t %fhPa\n", record.absolute_pressure);
 	printf("Wind Speed:\t\t\t %fm/s\n", record.wind_speed);
 	printf("Gust Speed:\t\t\t %fm/s\n", record.gust_speed);
 	printf("Wind Direction:\t\t\t %f° from north\n", record.wind_direction);

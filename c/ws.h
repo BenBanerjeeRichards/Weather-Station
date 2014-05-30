@@ -108,7 +108,7 @@ typedef struct
 	double indoor_temperature;
 	double outdoor_temperature;
 	
-	double pressure;
+	double absolute_pressure;
 	
 	double wind_speed;
 	double gust_speed;
