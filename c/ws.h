@@ -164,9 +164,10 @@ typedef struct
 	ws_min_max absolute_pressure;
 	ws_min_max relative_pressure;
 	
-	ws_min_max wind_speed;
-	ws_min_max gust_speed;
+	ws_min_max wind_speed;		// no min
+	ws_min_max gust_speed;		// no min
 	
+	ws_min_max rain_hourly;		// no min
 	ws_min_max rain_daily;		// no min
 	ws_min_max rain_weekly;		// no min
 	ws_min_max rain_monthly;	// no min
