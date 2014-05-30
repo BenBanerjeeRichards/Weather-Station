@@ -171,9 +171,9 @@ int ws_process_record_data(unsigned char *data, ws_weather_record *record)
 {
 	record->indoor_humidity = data[1];
 	record->outdoor_humidity = data[4];
-	record->indoor_temperature = 0.1 * ws_value_of_bytes(data[3], data[2]);
-	record->outdoor_temperature = 0.1 * ws_value_of_bytes(data[6], data[5]);
-	record->pressure = 0.1 * ws_value_of_bytes(data[8], data[7]);
+	record->indoor_temperature = 0.1 * ws_decode_signed_short(data[3], data[2]);
+	record->outdoor_temperature = 0.1 * ws_decode_signed_short(data[6], data[5]);
+	record->pressure = 0.1 * ws_decode_signed_short(data[8], data[7]);
 
 	uint8_t wind_speed_low = data[9];
 	uint8_t wind_speed_high = data[11] & 0xF;
@@ -184,7 +184,7 @@ int ws_process_record_data(unsigned char *data, ws_weather_record *record)
 	record->gust_speed = 0.1 * ((gusting_high >> 8) | gusting_low);
 	
 	record->wind_direction = 22.5 * data[12];
-	record->total_rain = 0.3 * ws_value_of_bytes(data[14], data[13]);
+	record->total_rain = 0.3 * ws_decode_signed_short(data[14], data[13]);
 	
 	int rain_overflow_mask = 0x80;
 	int contact_lost_mask = 0x40;
