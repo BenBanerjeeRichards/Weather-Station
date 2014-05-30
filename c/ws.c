@@ -175,7 +175,7 @@ int ws_latest_record_address(ws_device *dev, int *address)
 	unsigned char data[32];
 	int read;
 	*address = 0;
-	int status = ws_read_block(dev, 0x00, data, &read);
+	int status = ws_read_stable_block(dev, 0x00, data, &read);
 	if (status != WS_SUCCESS)
 	{
 		return status;
@@ -236,7 +236,7 @@ int ws_read_weather_record(ws_device *dev, int address, ws_weather_record *recor
 	
 	unsigned char data[32];
 	int read;
-	ws_read_block(dev, address, data, &read);  
+	ws_read_stable_block(dev, address, data, &read);  
 	ws_process_record_data(data, record);
 	
 	return WS_SUCCESS;
@@ -250,7 +250,7 @@ int ws_read_fixed_block_data(ws_device *dev, unsigned char* fixed_block_data, in
 
 	for (int i = 0; i < 0x100; i += 0x20)
 	{
-		int status = ws_read_block(dev, i, data, &rd);
+		int status = ws_read_stable_block(dev, i, data, &rd);
 		if (status != WS_SUCCESS)
 		{
 			return status;
@@ -364,7 +364,7 @@ void ws_print_mem_dump(ws_device *dev, int blocks)
 	for (int j = 0; j < blocks; j++)
 	{
 	
-		int status = ws_read_block(dev, address, data, &read);
+		int status = ws_read_stable_block(dev, address, data, &read);
 		
 		if (status != WS_SUCCESS)
 		{
