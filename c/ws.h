@@ -195,6 +195,14 @@ typedef struct
 			// Handle error
 		}
 		
+		ws_get_str_error() provides the string representation of an error
+
+		int status = int_returning_function();
+		if (status != WS_SUCCESS)
+		{
+			printf("Error: %s\n", ws_get_str_error(status));
+		}
+
 		- Most functions require root priviliges to work.
 */
 
