@@ -8,4 +8,10 @@ This software, in its completed form, will be able to:
 - Process this data to determine more information, for example longest dry period and as well as performing validation and sanity checks.
 - Store this data in a database (of which is to be decided)
 - Provide a restful API which allows external applications to access the data. 
- 
+
+#### Dependencies
+- [libusb](http://www.libusb.org/)
+
+#### Contents
+- [Memory Layout of the Weather Station](https://github.com/BenBanerjeeRichards/Weather-Station/blob/master/doc/Memory%20Layout.md)
+- [C API](https://github.com/BenBanerjeeRichards/Weather-Station/blob/master/doc/C%20API.md)

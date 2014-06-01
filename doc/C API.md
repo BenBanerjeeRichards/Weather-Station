@@ -1,0 +1,68 @@
+## C API 
+
+This API is capable of the following:
+- Reading data at an arbitrary address from the weather station.
+
+
+### Initialisation
+To interact directly with the device, use the `ws.h` header file. The following sample code initialises everything, preparing everything for further interaction
+with the device
+
+``` C
+#include <stdio.h>
+#include "ws.h"
+
+int main(int argc, char** args)
+{
+    // Device stuct contains information about the weather station, allowing the program to communicate via libusb
+    ws_device dev;
+
+    // Find the device, filling out the device struct.
+    int status = ws_init(&dev);
+    if (status != WS_SUCCESS)
+    {
+        printf("ws_init failed: %s", ws_get_str_error(status));
+        return 1;
+    }
+
+    // Prepare for IO communications with the station
+    status = ws_initialise_read(&dev);
+    if (status != WS_SUCCESS)
+    {
+        printf("ws_initialise_read failed: %s", ws_get_str_error(status));
+        return 1;
+    }
+
+    return 0;
+
+}
+```
+### Reading Live Data from the Device
+
+To do this, there are two steps that need to be taken:
+
+1. Get the latest address of which data is being written to. (`ws_latest_record_address`)
+2. Retrieve the data from this location and process it (`ws_read_weather_record`)
+
+The following program does the above. Note that error handling has been removed. For int returning functions, the error
+handling shown in the above initialisation example should be utilised.
+
+``` C
+int main(int argc, char** args)
+{
+    // Device stuct contains information about the weather station, allowing the program to communicate via libusb
+    ws_device dev;
+
+    // *** SNIP Program initalisation (see above initialisation code) ***//
+    // Get the latest address
+    int address;
+    ws_latest_record_address(&dev, &address);
+
+    // Read and process the data
+    ws_weather_record record;
+    ws_read_weather_record(&dev, address, &record);
+
+    // Debug function prints the contents of a ws_weather_record
+    ws_print_weather_record(record);
+}
+```
