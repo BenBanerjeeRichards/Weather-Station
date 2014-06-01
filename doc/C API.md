@@ -2,6 +2,35 @@
 
 This API is capable of the following:
 - Reading data at an arbitrary address from the weather station.
+- Processing the data of a weather record (history entry).
+- Processing the data to retrieve weather extremes.
+
+### Data Structures
+#### ws_weather_record
+
+Holds the data for a single weather record stored in the circular buffer.
+
+| Name                | Type              | Unit               | Notes                              |
+|---------------------|-------------------|--------------------|------------------------------------|
+| indoor_humidity     | int               | Percent            |                                    |
+| outdoor_humidity    | int               | Percent            |                                    |
+| indoor_temperature  | double            | Degrees Celcius    |                                    |
+| outdoor_temperature | double            | Degrees Celcius    |                                    |
+| absolute_pressure   | double            | Hectopascals       |                                    |
+| wind_speed          | double            | Meters per Second  |                                    |
+| gust_speed          | double            | Meters per Second  |                                    |
+| wind_direction      | double            | Degrees from North |                                    |
+| total_rain          | double            | Millimetre         |                                    |
+| status              | ws_station_status |                    | Weather Station Status information |
+
+#### ws_station_status
+
+The status of the weather station.
+
+| Name                  | Type | Notes                  |
+|-----------------------|------|------------------------|
+| sensor_contact_error  | int  | 1 if there is an error |
+| rain_counter_overflow | int  | 1 if there is an error |
 
 
 ### Initialisation

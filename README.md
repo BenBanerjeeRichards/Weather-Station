@@ -12,6 +12,6 @@ This software, in its completed form, will be able to:
 #### Dependencies
 - [libusb](http://www.libusb.org/)
 
-#### Contents
+#### Documentation Contents
 - [Memory Layout of the Weather Station](https://github.com/BenBanerjeeRichards/Weather-Station/blob/master/doc/Memory%20Layout.md)
 - [C API](https://github.com/BenBanerjeeRichards/Weather-Station/blob/master/doc/C%20API.md)
