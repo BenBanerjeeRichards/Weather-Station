@@ -50,7 +50,7 @@ int main(int argc, char** args)
     int status = ws_init(&dev);
     if (status != WS_SUCCESS)
     {
-        printf("ws_init failed: %s", ws_get_str_error(status));
+        printf("ws_init failed: %s\n", ws_get_str_error(status));
         return 1;
     }
 
@@ -58,7 +58,7 @@ int main(int argc, char** args)
     status = ws_initialise_read(&dev);
     if (status != WS_SUCCESS)
     {
-        printf("ws_initialise_read failed: %s", ws_get_str_error(status));
+        printf("ws_initialise_read failed: %s\n", ws_get_str_error(status));
         return 1;
     }
 

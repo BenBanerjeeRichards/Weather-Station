@@ -23,7 +23,7 @@ int ws_init(ws_device *dev)
 	// libusb_open_device_with_vid_pid() doesn't seem to work as intended, so 
 	// instead the program loops through all of the devices until the weather station
 	// is found
-	
+	  
 	libusb_device **devs;
 	int count = libusb_get_device_list(NULL, &devs);
 	
@@ -540,4 +540,3 @@ const char* ws_get_str_error(int error_no)
 	}
 	return error;
 }
-

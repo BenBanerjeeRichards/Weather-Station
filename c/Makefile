@@ -2,7 +2,7 @@ FLAGS = -Wall -Wno-unused-variable
 COMPILER = clang
 
 out: main.o ws.o
-	$(COMPILER) main.o ws.o $(FLAGS) -o out -lusb-1.0
+	$(COMPILER) main.o ws.o $(FLAGS) -o out -lusb-1.0 -lm
 
 main.o: main.c
 	$(COMPILER) -c -g main.c $(FLAGS)
