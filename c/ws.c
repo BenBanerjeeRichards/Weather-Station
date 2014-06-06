@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 #include <libusb-1.0/libusb.h>
 #include <string.h>
 #include "ws.h"
@@ -73,7 +74,7 @@ int ws_initialise_read(ws_device *dev)
 	// have attached a driver in the first instance or it could have been
 	// already been removed earlier
 	libusb_detach_kernel_driver(dev->hnd, 0);
-	
+
 	int status = libusb_claim_interface(dev->hnd, 0);
 	if (status < 0)
 	{
@@ -83,7 +84,7 @@ int ws_initialise_read(ws_device *dev)
 	
 	int req_type = LIBUSB_ENDPOINT_OUT | LIBUSB_REQUEST_TYPE_CLASS | LIBUSB_RECIPIENT_INTERFACE;			
 	unsigned char buf[0];
-	
+
 	status =  libusb_control_transfer(dev->hnd, req_type, 0xA, 0x0, 0x0, buf, sizeof(buf), 0);
 	if (status < 0)
 	{
@@ -219,6 +220,12 @@ int ws_process_record_data(unsigned char *data, ws_weather_record *record)
 	
 	record->status.sensor_contact_error = ((data[15] & contact_lost_mask) == contact_lost_mask);
 	record->status.rain_counter_overflow = ((data[15] & rain_overflow_mask) == rain_overflow_mask);
+
+	// Calculate dew point
+	double a = 17.27;
+	double b = 237.7;
+	double gamma = (a * record->outdoor_temperature / (b + record->outdoor_temperature)) + log(record->outdoor_humidity / 100.0);
+	record->dew_point = b * gamma / (a - gamma);
 
 	return WS_SUCCESS;
 }
@@ -471,6 +478,7 @@ void ws_print_weather_record(ws_weather_record record)
 	printf("Outdoor Humidity:\t\t %i%% \n", record.outdoor_humidity);
 	printf("Indoor Temperature:\t\t %f°C\n", record.indoor_temperature);
 	printf("Outdoor Temperature:\t\t %f°C\n", record.outdoor_temperature);
+	printf("Dew Point:\t\t\t %f°C\n", record.dew_point);
 	printf("Pressure:\t\t\t %fhPa\n", record.absolute_pressure);
 	printf("Wind Speed:\t\t\t %fm/s\n", record.wind_speed);
 	printf("Gust Speed:\t\t\t %fm/s\n", record.gust_speed);

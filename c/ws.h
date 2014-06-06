@@ -107,6 +107,7 @@ typedef struct
 	
 	double indoor_temperature;
 	double outdoor_temperature;
+	double dew_point;
 	
 	double absolute_pressure;
 	
@@ -116,6 +117,10 @@ typedef struct
 	
 	double total_rain;
 	ws_station_status status;
+
+	// The following is calculated after the data has been read
+	double tm;
+
 
 } ws_weather_record;  
 
