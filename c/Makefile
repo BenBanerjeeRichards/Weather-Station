@@ -1,4 +1,4 @@
-FLAGS = -Wall -Wno-unused-variable
+FLAGS = -Wall -Wno-unused-variable -no-integrated-as
 COMPILER = clang
 
 out: main.o ws.o station.o

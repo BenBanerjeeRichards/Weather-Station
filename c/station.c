@@ -2,6 +2,7 @@
 #include "ws.h"
 #include <stdio.h>
 #include <math.h>
+#include <time.h>
 
 int station_download_data(ws_device *dev)
 {
@@ -12,30 +13,49 @@ int station_download_data(ws_device *dev)
 	int status = ws_latest_record_address(dev, &address);
 	if (status != WS_SUCCESS)
 	{
-		printf("no\n");
 		return status;
 	}
 
 	address -= 0x20;
 	int n = 0;
-	for (int i = 0x100; i < 0x1000; i += 0x20)
+	
+	int total_record_count = (address - 0x100) / 16;
+	int days_recorded = ceil(total_record_count / 48);
+
+	time_t t_today;
+	struct tm* now = NULL; 
+
+	for (int i = 0x100; i < 0x500; i += 0x10)
 	{
 		// Calculate when the data was recorded
 		n++;
 		double days = n * (1.0 / 48.0);
-		double tm = (24 * days) - (24 * floor(days));
-		int days_ago = floor(days);
+		double record_time = (24 * days) - (24 * floor(days));
+		int day_offset_from_start = floor(days);
 
+		// Calculate the actual date of the data
+	    t_today = time(0);
+		now = localtime(&t_today);
+
+		now->tm_mday -= (22 - day_offset_from_start);
+		now->tm_hour = (int)floor(record_time) - 1;
+
+		mktime(now);
+
+
+
+		printf("[\t%i\t] %s", n, asctime(now));
 		// Download data from address
 		ws_weather_record record;
 		int read;
+
 		status = ws_read_weather_record(dev, i, &record);
 		if (status != WS_SUCCESS)
 		{
 			return status;
 		}
 
-		ws_print_weather_record(record);
+		//ws_print_weather_record(record);
 
 
 	}
@@ -43,3 +63,4 @@ int station_download_data(ws_device *dev)
 
 	return WS_SUCCESS;
 }
+
