@@ -21,11 +21,12 @@ int station_download_data(ws_device *dev)
 	
 	int total_record_count = (address - 0x100) / 16;
 	int days_recorded = ceil(total_record_count / 48);
+	double hours_eclapsed = 0.5 * total_record_count;
 
 	time_t t_today;
 	struct tm* now = NULL; 
 
-	for (int i = 0x100; i < 0x500; i += 0x10)
+	for (int i = 0x100; i < address; i += 0x10)
 	{
 		// Calculate when the data was recorded
 		n++;
@@ -37,9 +38,10 @@ int station_download_data(ws_device *dev)
 	    t_today = time(0);
 		now = localtime(&t_today);
 
-		now->tm_mday -= (22 - day_offset_from_start);
-		now->tm_hour = (int)floor(record_time) - 1;
-
+		double hours_from_present = hours_eclapsed - 0.5 * (n - 1);
+		now->tm_mday -= (days_recorded - day_offset_from_start);
+		now->tm_hour -= floor(hours_from_present);
+		now->tm_min -= (floor(hours_from_present) == hours_from_present) ? 0 : 30;
 		mktime(now);
 
 
