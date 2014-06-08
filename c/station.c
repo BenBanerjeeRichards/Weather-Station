@@ -26,7 +26,7 @@ int station_download_data(ws_device *dev)
 	time_t t_today;
 	struct tm* now = NULL; 
 
-	for (int i = 0x100; i < address; i += 0x10)
+	for (int i = 0x100; i < 0x500; i += 0x10)
 	{
 		// Calculate when the data was recorded
 		n++;
@@ -44,9 +44,6 @@ int station_download_data(ws_device *dev)
 		now->tm_min -= (floor(hours_from_present) == hours_from_present) ? 0 : 30;
 		mktime(now);
 
-
-
-		printf("[\t%i\t] %s", n, asctime(now));
 		// Download data from address
 		ws_weather_record record;
 		int read;
@@ -57,9 +54,7 @@ int station_download_data(ws_device *dev)
 			return status;
 		}
 
-		//ws_print_weather_record(record);
-
-
+		record.date_time = now;
 	}
 
 

@@ -119,7 +119,7 @@ typedef struct
 	ws_station_status status;
 
 	// The following is calculated after the data has been read
-	double tm;
+	struct tm *date_time;
 
 
 } ws_weather_record;  
