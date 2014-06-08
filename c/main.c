@@ -6,7 +6,7 @@ int main(int argc, char** args)
 {
     ws_device dev;
     int status = WS_SUCCESS;
-    station_download_data(&dev);
+    status = station_download_data(&dev);
     if (status != WS_SUCCESS)
     {
         printf("error\n");

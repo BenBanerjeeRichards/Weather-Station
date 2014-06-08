@@ -4,6 +4,74 @@
 #include <math.h>
 #include <time.h>
 
+void station_check_record(ws_weather_record *record)
+{
+	if (record->outdoor_humidity > 99 || record->outdoor_humidity < 0)
+	{
+		printf("out hum\n");
+		record->data_invalid = 1;
+		return;
+	}
+
+	if (record->indoor_humidity > 99 || record->indoor_humidity < 0)
+	{
+		printf("in hum\n");
+
+		record->data_invalid = 1;
+		return;
+	}
+
+	if (record->indoor_temperature >= 255 || record->indoor_temperature <= -255)
+	{
+		printf("in temp\n");
+		record->data_invalid = 1;
+		return;
+	}
+
+	if (record->outdoor_temperature >= 255 || record->outdoor_temperature <= -255)
+	{
+		printf("out temp\n");
+		record->data_invalid = 1;
+		return;
+	}
+
+	if (record->dew_point >= 255 || record->dew_point <= -255)
+	{
+		printf("dew point\n");
+		record->data_invalid = 1;
+		return;
+	}
+
+	if (record->absolute_pressure > 10000000 || record->absolute_pressure < -10000000)
+	{
+		printf("pressure\n");
+		record->data_invalid = 1;
+		return;
+	}
+
+	if (record->wind_speed >= 255 || record->wind_speed < 0)
+	{
+		printf("wind speed\n");
+		record->data_invalid = 1;
+		return;
+	}
+
+	if (record->gust_speed >= 255 || record->gust_speed < 0)
+	{
+		printf("guesting\n");
+		record->data_invalid = 1;
+		return;
+	}
+
+	if (record->wind_direction > 360 || record->wind_direction < 0)
+	{
+		printf("dir\n");
+		record->data_invalid = 1;
+		return;
+	}
+
+}
+
 int station_download_data(ws_device *dev)
 {
 	ws_init(dev);
@@ -26,7 +94,7 @@ int station_download_data(ws_device *dev)
 	time_t t_today;
 	struct tm* now = NULL; 
 
-	for (int i = 0x100; i < 0x500; i += 0x10)
+	for (int i = 0x100; i < address; i += 0x10)
 	{
 		// Calculate when the data was recorded
 		n++;
@@ -55,9 +123,17 @@ int station_download_data(ws_device *dev)
 		}
 
 		record.date_time = now;
+		record.data_invalid = 0;
+		station_check_record(&record);
+		printf("%s", asctime(now));
+		if (record.data_invalid)
+		{
+			printf("Invalid Record\n");
+			ws_print_weather_record(record);
+		}
 	}
-
 
 	return WS_SUCCESS;
 }
+
 

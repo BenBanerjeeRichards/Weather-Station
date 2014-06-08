@@ -120,7 +120,7 @@ typedef struct
 
 	// The following is calculated after the data has been read
 	struct tm *date_time;
-
+	uint8_t data_invalid;		// If 1, data is invalid and should be ignored 
 
 } ws_weather_record;  
 

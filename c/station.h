@@ -12,5 +12,5 @@ typedef struct {
 
 int station_download_data(ws_device *dev);
 
-
+void station_check_record(ws_weather_record *record);
 #endif 
