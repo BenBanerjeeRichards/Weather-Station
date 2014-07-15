@@ -84,9 +84,9 @@ int station_download_data(ws_device *dev)
 	time_t t_today;
 	struct tm* now = NULL; 
 
-
 	for (int i = 0x100; i < address; i += 0x10)
 	{
+		printf("reading from address 0x%04x\n", i);
 		// Calculate when the data was recorded
 		n++;
 		double days = n * (1.0 / 48.0);
@@ -108,13 +108,16 @@ int station_download_data(ws_device *dev)
 		int read;
 
 		status = ws_read_weather_record(dev, i, &record);
+		if (status == WS_ERR_TIMEOUT)
+		{
+			printf("Timeout\n");
+		}
 		if (status != WS_SUCCESS)
 		{
 			return status;
 		}
 
 		record.date_time = now;
-		record.data_invalid = 0;
 		station_check_record(&record);		
 	}
 
