@@ -115,9 +115,13 @@ int ws_read_block(ws_device *dev, int address, unsigned char* data, int* read)
 	
 	int req_type = LIBUSB_ENDPOINT_OUT | LIBUSB_REQUEST_TYPE_CLASS | LIBUSB_RECIPIENT_INTERFACE;
 	
-	status =  libusb_control_transfer(dev->hnd, req_type, 0x9, 0x200, 0x0, write_data, sizeof(write_data), 0);
+	status =  libusb_control_transfer(dev->hnd, req_type, 0x9, 0x200, 0x0, write_data, sizeof(write_data), 100);
 	if (status < 0)
 	{
+		if (status == LIBUSB_ERROR_TIMEOUT)
+		{
+			return WS_ERR_TIMEOUT;
+		}
 		ws_usb_error(status, "ws_read_block::libusb_control_transfer");
 		return WS_ERR_CONTROL_TRANSFER_FAILED;
 	}
