@@ -2,7 +2,15 @@
 #define WS_STORE_H
 
 #include "ws.h"
+#include <sqlite3.h>
 
-int ws_store_write_record(ws_weather_record record);
+struct dbinfo {
+	sqlite3* db_handle;
+};
 
-#endif
+void db_error(struct dbinfo* info, const char* extra);
+
+int ws_store_open_db(struct dbinfo* info);
+int ws_store_close_db(struct dbinfo* info);
+int ws_store_create_statement(struct dbinfo* info, const char* sql, int sql_size sqlite3_stmt* statement);
+#endif  
