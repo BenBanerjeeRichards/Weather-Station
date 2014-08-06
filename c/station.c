@@ -66,8 +66,15 @@ void station_check_record(ws_weather_record *record)
 
 int station_download_data(ws_device *dev)
 {
+	// Init USB 
 	ws_init(dev);
 	ws_initialise_read(dev);
+
+	// Init DB
+	sqlite3* info = NULL;
+	ws_store_open_db(&info);
+	ws_store_prepare_db(&info);
+
 
 	int address;
 	int status = ws_latest_record_address(dev, &address);
@@ -125,10 +132,11 @@ int station_download_data(ws_device *dev)
 
 		if (!record.data_invalid)
 		{
-			ws_print_weather_record(record);
-			ws_store_add_weather_record(record);
+			ws_store_add_weather_record(info, record);
 		}
 	}
+
+	ws_store_close_db(&info);
 
 	return WS_SUCCESS;
 }
