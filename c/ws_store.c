@@ -52,11 +52,6 @@ int ws_store_execute_query(sqlite3** info, sqlite3_stmt** statement)
 		return WS_DB_ROW;
 	}
 
-	if (status == SQLITE_MISUSE)
-	{
-		printf("MISUSE!\n");
-	}
-
 	if (status != SQLITE_OK && status != SQLITE_DONE && status != SQLITE_ROW)
 	{
 		db_error(*info, "ws_store_execute_query");
@@ -73,6 +68,58 @@ int ws_store_delete_stmt(sqlite3** info, sqlite3_stmt** statement)
 	{
 		db_error(*info, "ws_store_delete_stmt");
 		return WS_ERR_DEL_STMT;
+	}
+
+	return WS_SUCCESS;
+}
+
+int ws_store_prepare_db(sqlite3** info)
+{
+	/* Create the table for storing weather records */
+	char sql[] = "CREATE TABLE IF NOT EXISTS WeatherData( RecordDateTime TEXT PRIMARY KEY, IndoorHumidity INTEGER, OutdoorHumidity INTEGER,"
+				"IndoorTemperature REAL, OutdoorTemperature REAL, DewPoint REAL, AbsolutePressure REAL, WindSpeed REAL,"
+				"GuestSpeed REAL, WindDirection REAL, TotalRain REAL, SensorContactError INTEGER, RainCounterOverflow INTEGER )";
+	
+	sqlite3_stmt* statement = NULL;
+	
+	int status = ws_store_create_statement(info, sql, sizeof(sql) / sizeof(sql[0]), &statement);
+	if (status != WS_SUCCESS)
+	{
+		return status;
+	}
+
+	status = ws_store_execute_query(info, &statement);
+	if (status != WS_DB_ROW && status != WS_SUCCESS)
+	{
+		return status;
+	}
+	
+	status = ws_store_delete_stmt(info, &statement);
+	if (status != WS_SUCCESS)
+	{
+		return status;
+	}
+
+	/* Create the table for storing weather extremes */
+	char sql2[] = "CREATE TABLE IF NOT EXISTS WeatherExtremes(Name TEXT PRIMARY KEY, MinValue REAL, MinDateTime TEXT, MaxValue REAL,  MaxDateTime TEXT)";
+	sqlite3_stmt* statement2;
+
+	 status = ws_store_create_statement(info, sql2, sizeof(sql2) / sizeof(sql2[0]), &statement2);
+	if (status != WS_SUCCESS)
+	{
+		return status;
+	}
+
+	status = ws_store_execute_query(info, &statement2);
+	if (status != WS_DB_ROW && status != WS_SUCCESS)
+	{
+		return status;
+	}
+	
+	status = ws_store_delete_stmt(info, &statement2);
+	if (status != WS_SUCCESS)
+	{
+		return status;
 	}
 
 	return WS_SUCCESS;
