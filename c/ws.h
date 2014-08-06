@@ -25,7 +25,8 @@
 	ERROR(WS_ERR_DB_OPEN)					\
 	ERROR(WS_ERR_DB_CLOSE)					\
 	ERROR(WS_ERR_DB_QUERY)					\
-	ERROR(WS_ERR_DB_PREPARE)			\
+	ERROR(WS_ERR_DB_PREPARE)				\
+	ERROR(WS_ERR_DEL_STMT)					\
 
 	
 #define GENERATE_ENUM(ENUM) ENUM,
@@ -36,7 +37,8 @@ enum ws_errors {
 };
 
 enum ws_success {
-	WS_SUCCESS = -10
+	WS_SUCCESS = -10,
+	WS_DB_ROW = -20
 };
 
 static const char *ws_errors_string[] = {
