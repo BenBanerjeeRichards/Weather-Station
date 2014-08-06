@@ -1,15 +1,14 @@
 #include <stdio.h>
 #include "ws.h"
 #include "station.h"
+#include "ws_store.h"
+#include "config.h"
 
 int main(int argc, char** args)
 {
-    ws_device dev;
-    int status = WS_SUCCESS;
-    status = station_download_data(&dev);
-    if (status != WS_SUCCESS)
-    {
-        printf("error\n");
-    }
-    return 0;
+
+	ws_device dev;
+	station_download_data(&dev);
+    return 0; 
+	
 }
