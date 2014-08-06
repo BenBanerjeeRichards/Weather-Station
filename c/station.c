@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <time.h>
-
+#include "ws_store.h"
 void station_check_record(ws_weather_record *record)
 {
 	if (record->outdoor_humidity > 99 || record->outdoor_humidity < 0)
@@ -60,6 +60,8 @@ void station_check_record(ws_weather_record *record)
 		return;
 	}
 
+	record->data_invalid = 0;
+
 }
 
 int station_download_data(ws_device *dev)
@@ -84,9 +86,9 @@ int station_download_data(ws_device *dev)
 	time_t t_today;
 	struct tm* now = NULL; 
 
-	for (int i = 0x100; i < address; i += 0x10)
+	for (int i = 0x100; i < 0x120; i += 0x10)
 	{
-		printf("reading from address 0x%04x\n", i);
+		//printf("reading from address 0x%04x\n", i);
 		// Calculate when the data was recorded
 		n++;
 		double days = n * (1.0 / 48.0);
@@ -118,7 +120,14 @@ int station_download_data(ws_device *dev)
 		}
 
 		record.date_time = now;
-		station_check_record(&record);		
+
+		station_check_record(&record);
+
+		if (!record.data_invalid)
+		{
+			ws_print_weather_record(record);
+			ws_store_add_weather_record(record);
+		}
 	}
 
 	return WS_SUCCESS;
