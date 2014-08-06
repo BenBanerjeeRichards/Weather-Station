@@ -125,7 +125,7 @@ int ws_store_prepare_db(sqlite3** info)
 	return WS_SUCCESS;
 }
 
-int ws_store_add_weather_record(ws_weather_record record)
+int ws_store_add_weather_record(sqlite3* info, ws_weather_record record)
 {
 	char sql[512];
 	char date[20];
@@ -134,13 +134,29 @@ int ws_store_add_weather_record(ws_weather_record record)
 	snprintf(date, 20, "%.4i-%.2i-%.2i %.2i:%.2i:%.2i.%.3i", record.date_time->tm_year + 1900, record.date_time->tm_mon + 1, 
 															 record.date_time->tm_mday, record.date_time->tm_hour, record.date_time->tm_min, 0, 0);
 
-	snprintf(sql, 512, "INSERT INTO WeatherData VALUES(NULL, %s, %i, %i, %f, %f, %f, %f, %f, %f, %f, %f, %i, %i)", 
+	snprintf(sql, 512, "INSERT INTO WeatherData VALUES('%s', '%i', '%i', '%f', '%f', '%f', '%f', '%f', '%f', '%f', '%f', '%i', '%i')", 
 		     date, record.indoor_humidity, record.outdoor_humidity, record.indoor_temperature, record.outdoor_temperature, 
 		     record.dew_point, record.absolute_pressure, record.wind_speed, record.gust_speed, record.wind_direction, 
 		     record.total_rain, record.status.sensor_contact_error, record.status.rain_counter_overflow);
 
-	printf("%s\n", sql);
+	sqlite3_stmt* statement;
+	int status = ws_store_create_statement(&info, sql, 512, &statement);
+	if (status != WS_SUCCESS)
+	{
+		return status;
+	}
 
+	status = ws_store_execute_query(&info, &statement);
+	if (status != WS_SUCCESS && status != WS_DB_ROW)
+	{
+		return status;
+	}
+
+	status = ws_store_delete_stmt(&info, &statement);
+	if (status != WS_SUCCESS)
+	{
+		return status;
+	}
 	return WS_SUCCESS;
 
 
