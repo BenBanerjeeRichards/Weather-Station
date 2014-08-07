@@ -110,7 +110,7 @@ int ws_store_begin_transaction(sqlite3** info)
 
 int ws_store_end_transaction(sqlite3** info)
 {
-	char sql[] = "END";
+	char sql[] = "COMMIT";
 	int status = ws_store_query(info, sql, sizeof(sql) / sizeof(sql[0]));
 	if (status != WS_SUCCESS)
 	{
