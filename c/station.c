@@ -77,7 +77,6 @@ int station_download_data(ws_device *dev)
 	ws_store_open_db(&info);
 	ws_store_prepare_db(&info);
 
-
 	int address;
 	int status = ws_latest_record_address(dev, &address);
 	if (status != WS_SUCCESS)
@@ -107,7 +106,7 @@ int station_download_data(ws_device *dev)
 		n++;
 		trans++;
 
-		if (trans == 10)
+		if (trans == 100)
 		{
 			ws_store_end_transaction(&info);
 			ws_store_begin_transaction(&info);
