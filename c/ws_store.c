@@ -73,16 +73,10 @@ int ws_store_delete_stmt(sqlite3** info, sqlite3_stmt** statement)
 	return WS_SUCCESS;
 }
 
-int ws_store_prepare_db(sqlite3** info)
+int ws_store_query(sqlite3** info, char* sql, int sql_size)
 {
-	/* Create the table for storing weather records */
-	char sql[] = "CREATE TABLE IF NOT EXISTS WeatherData( RecordDateTime TEXT PRIMARY KEY, IndoorHumidity INTEGER, OutdoorHumidity INTEGER,"
-				"IndoorTemperature REAL, OutdoorTemperature REAL, DewPoint REAL, AbsolutePressure REAL, WindSpeed REAL,"
-				"GuestSpeed REAL, WindDirection REAL, TotalRain REAL, SensorContactError INTEGER, RainCounterOverflow INTEGER )";
-	
-	sqlite3_stmt* statement = NULL;
-	
-	int status = ws_store_create_statement(info, sql, sizeof(sql) / sizeof(sql[0]), &statement);
+	sqlite3_stmt* statement;
+	int status = ws_store_create_statement(info, sql, sql_size, &statement);
 	if (status != WS_SUCCESS)
 	{
 		return status;
@@ -100,23 +94,53 @@ int ws_store_prepare_db(sqlite3** info)
 		return status;
 	}
 
-	/* Create the table for storing weather extremes */
-	char sql2[] = "CREATE TABLE IF NOT EXISTS WeatherExtremes(Name TEXT PRIMARY KEY, MinValue REAL, MinDateTime TEXT, MaxValue REAL,  MaxDateTime TEXT)";
-	sqlite3_stmt* statement2;
+	return WS_SUCCESS;
+}
 
-	 status = ws_store_create_statement(info, sql2, sizeof(sql2) / sizeof(sql2[0]), &statement2);
+int ws_store_prepare_db(sqlite3** info)
+{
+	int status;
+	/******************** FOR TESTING ********************/
+
+	char sql_test[] = "DROP TABLE IF EXISTS WeatherData";
+	sqlite3_stmt* statement_test = NULL;
+
+
+	status = ws_store_create_statement(info, sql_test, sizeof(sql_test) / sizeof(sql_test[0]), &statement_test);
 	if (status != WS_SUCCESS)
 	{
 		return status;
 	}
 
-	status = ws_store_execute_query(info, &statement2);
+	status = ws_store_execute_query(info, &statement_test);
 	if (status != WS_DB_ROW && status != WS_SUCCESS)
 	{
 		return status;
 	}
 	
-	status = ws_store_delete_stmt(info, &statement2);
+	status = ws_store_delete_stmt(info, &statement_test);
+	if (status != WS_SUCCESS)
+	{
+		return status;
+	}
+	/******************** END TESTING ********************/
+
+
+	/* Create the table for storing weather records */
+	char sql[] = "CREATE TABLE IF NOT EXISTS WeatherData( RecordDateTime TEXT PRIMARY KEY, IndoorHumidity INTEGER, OutdoorHumidity INTEGER,"
+				"IndoorTemperature REAL, OutdoorTemperature REAL, DewPoint REAL, AbsolutePressure REAL, WindSpeed REAL,"
+				"GuestSpeed REAL, WindDirection REAL, TotalRain REAL, SensorContactError INTEGER, RainCounterOverflow INTEGER )";
+		
+	status = ws_store_query(info, sql, sizeof(sql) / sizeof(sql[0]));
+	if (status != WS_SUCCESS)
+	{
+		return status;
+	}
+
+	/* Create the table for storing weather extremes */
+	char sql2[] = "CREATE TABLE IF NOT EXISTS WeatherExtremes(Name TEXT PRIMARY KEY, MinValue REAL, MinDateTime TEXT, MaxValue REAL,  MaxDateTime TEXT)";
+
+   status = ws_store_query(info, sql2, sizeof(sql2) / sizeof(sql2[0]));
 	if (status != WS_SUCCESS)
 	{
 		return status;
@@ -139,24 +163,12 @@ int ws_store_add_weather_record(sqlite3* info, ws_weather_record record)
 		     record.dew_point, record.absolute_pressure, record.wind_speed, record.gust_speed, record.wind_direction, 
 		     record.total_rain, record.status.sensor_contact_error, record.status.rain_counter_overflow);
 
-	sqlite3_stmt* statement;
-	int status = ws_store_create_statement(&info, sql, 512, &statement);
+	int status = ws_store_query(&info, sql, 512);
 	if (status != WS_SUCCESS)
 	{
 		return status;
 	}
 
-	status = ws_store_execute_query(&info, &statement);
-	if (status != WS_SUCCESS && status != WS_DB_ROW)
-	{
-		return status;
-	}
-
-	status = ws_store_delete_stmt(&info, &statement);
-	if (status != WS_SUCCESS)
-	{
-		return status;
-	}
 	return WS_SUCCESS;
 
 

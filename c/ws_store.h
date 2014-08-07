@@ -11,6 +11,7 @@ int ws_store_close_db(sqlite3** info);
 int ws_store_create_statement(sqlite3** info, char* sql, int sql_size, sqlite3_stmt** statement);
 int ws_store_execute_query(sqlite3** info, sqlite3_stmt** statement);
 int ws_store_delete_stmt(sqlite3** info, sqlite3_stmt** statement);
+int ws_store_query(sqlite3** info, char* sql, int sql_size);
 
 int ws_store_prepare_db(sqlite3** info);
 int ws_store_add_weather_record(sqlite3* info, ws_weather_record record);
