@@ -185,13 +185,24 @@ int ws_store_add_weather_record(sqlite3* info, ws_weather_record record)
 		     record.dew_point, record.absolute_pressure, record.wind_speed, record.gust_speed, record.wind_direction, 
 		     record.total_rain, record.status.sensor_contact_error, record.status.rain_counter_overflow);
 
-	int status = ws_store_query(&info, sql, 512);
+	sqlite3_stmt* statement;
+	int status = ws_store_create_statement(&info, sql, 512, &statement);
 	if (status != WS_SUCCESS)
 	{
 		return status;
 	}
 
-	return WS_SUCCESS;
+	status = ws_store_execute_query(&info, &statement);
+	if (status != WS_SUCCESS && status != WS_DB_ROW)
+	{
+		return status;
+	}
 
+	status = ws_store_delete_stmt(&info, &statement);
+	if (status != WS_SUCCESS)
+	{
+		return status;
+	}
+	return WS_SUCCESS;
 
 }
