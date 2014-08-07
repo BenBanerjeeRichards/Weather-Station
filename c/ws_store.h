@@ -15,4 +15,7 @@ int ws_store_query(sqlite3** info, char* sql, int sql_size);
 
 int ws_store_prepare_db(sqlite3** info);
 int ws_store_add_weather_record(sqlite3* info, ws_weather_record record);
+int ws_store_begin_transaction(sqlite3** info);
+int ws_store_end_transaction(sqlite3** info);
+
 #endif  

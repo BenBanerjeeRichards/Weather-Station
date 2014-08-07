@@ -97,6 +97,28 @@ int ws_store_query(sqlite3** info, char* sql, int sql_size)
 	return WS_SUCCESS;
 }
 
+int ws_store_begin_transaction(sqlite3** info)
+{
+	char sql[] = "BEGIN";
+	int status = ws_store_query(info, sql, sizeof(sql) / sizeof(sql[0]));
+	if (status != WS_SUCCESS)
+	{
+		return status;
+	}
+	return WS_SUCCESS;
+}
+
+int ws_store_end_transaction(sqlite3** info)
+{
+	char sql[] = "END";
+	int status = ws_store_query(info, sql, sizeof(sql) / sizeof(sql[0]));
+	if (status != WS_SUCCESS)
+	{
+		return status;
+	}
+	return WS_SUCCESS;
+}
+
 int ws_store_prepare_db(sqlite3** info)
 {
 	int status;
