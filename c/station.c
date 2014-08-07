@@ -4,6 +4,8 @@
 #include <math.h>
 #include <time.h>
 #include "ws_store.h"
+#include <time.h>
+
 void station_check_record(ws_weather_record *record)
 {
 	if (record->outdoor_humidity > 99 || record->outdoor_humidity < 0)
@@ -93,11 +95,25 @@ int station_download_data(ws_device *dev)
 	time_t t_today;
 	struct tm* now = NULL; 
 
-	for (int i = 0x100; i < 0x120; i += 0x10)
+	// Timing
+	clock_t start, end;
+	start = clock();
+	int trans = 0;
+	ws_store_begin_transaction(&info);
+
+	for (int i = 0x100; i < 0x200; i += 0x10)
 	{
-		//printf("reading from address 0x%04x\n", i);
 		// Calculate when the data was recorded
 		n++;
+		trans++;
+
+		if (trans == 10)
+		{
+			ws_store_end_transaction(&info);
+			ws_store_begin_transaction(&info);
+			trans = 0;
+		}
+
 		double days = n * (1.0 / 48.0);
 		double record_time = (24 * days) - (24 * floor(days));
 		int day_offset_from_start = floor(days);
@@ -135,8 +151,14 @@ int station_download_data(ws_device *dev)
 			ws_store_add_weather_record(info, record);
 		}
 	}
+	ws_store_end_transaction(&info);
 
+	end = clock();
+	float diff = (float)end - (float)start;
+	diff /= 1000000.0F;
+	diff *= 1000;
+
+	printf("Took %fms\n", diff);
 	ws_store_close_db(&info);
-
 	return WS_SUCCESS;
 }
